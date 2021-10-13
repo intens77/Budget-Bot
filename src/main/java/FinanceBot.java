@@ -41,8 +41,7 @@ public class FinanceBot extends TelegramLongPollingBot {
 
   @Override
   public String getBotToken() {
-
-    return "";
+    return System.getenv("BOT_ACCESS_TOKEN");
   }
 
   public static String processUserMessage(String message) {
