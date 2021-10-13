@@ -1,12 +1,11 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Scanner;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
 
 public class FinanceBot extends TelegramLongPollingBot {
 
@@ -57,20 +56,16 @@ public class FinanceBot extends TelegramLongPollingBot {
   }
 
   public String startProcess() {
-    String globalMessage = "";
-    try (BufferedReader reader = new BufferedReader(
-        new FileReader("/home/vladislav/Рабочий стол/TelegramBot/src/main/resources/help.txt"))) {
-      StringBuilder helpMessage = new StringBuilder();
-      String line;
-      while ((line = reader.readLine()) != null) {
-        helpMessage.append(line);
-        helpMessage.append("\n\n");
-      }
-      globalMessage = helpMessage.toString();
-    } catch (IOException e) {
+    String startMessage = "";
+    try {
+      Scanner scanner = new Scanner(new File(String.format("src%1$smain%1$sresources%1$sstart.txt",
+          File.separator)));
+      scanner.useDelimiter("\\Z");
+      startMessage = scanner.next();
+    } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
-    return globalMessage;
+    return startMessage;
   }
 
   public static String generateError() {

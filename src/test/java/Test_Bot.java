@@ -15,7 +15,7 @@ public class Test_Bot {
   void setUp() {
     bot = new FinanceBot();
     try (BufferedReader reader = new BufferedReader(
-        new FileReader("/home/vladislav/Рабочий стол/TelegramBot/src/main/resources/help.txt"))) {
+        new FileReader("/home/vladislav/Рабочий стол/TelegramBot/src/main/resources/start.txt"))) {
       StringBuilder helpMessage = new StringBuilder();
       String line;
       while ((line = reader.readLine()) != null) {
