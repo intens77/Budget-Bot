@@ -1,4 +1,4 @@
 public interface ICommand {
 
-  String myFunction();
+  String performFunction();
 }

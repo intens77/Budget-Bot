@@ -1,45 +1,31 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class Test_Bot {
 
   FinanceBot bot;
-  String globalMessage;
+  String message;
 
   @BeforeEach
   void setUp() {
     bot = new FinanceBot();
-    try (BufferedReader reader = new BufferedReader(
-        new FileReader("/home/vladislav/Рабочий стол/TelegramBot/src/main/resources/start.txt"))) {
-      StringBuilder helpMessage = new StringBuilder();
-      String line;
-      while ((line = reader.readLine()) != null) {
-        helpMessage.append(line);
-        helpMessage.append("\n\n");
-      }
-      globalMessage = helpMessage.toString();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    message = ActionsHandler.readFileContent("start.txt");
   }
 
   @Test
   void checkStart() {
-    assertEquals(globalMessage, bot.startProcess());
+    assertEquals(message, ActionsHandler.processUserMessage("/start"));
   }
 
   @Test
   void testGetStrategy() {
-    assertEquals("Стратегия 1\n Стратегия 2\n Стратегия 3", bot.getStrategies());
+    assertEquals("Стратегия 1\n Стратегия 2\n Стратегия 3",
+        ActionsHandler.processUserMessage("/get_strategies"));
   }
 
   @Test
   void testGenerateError() {
-    assertEquals("Я не знаю такую команду:(", FinanceBot.generateError());
+    assertEquals("Я не знаю такую команду:(", ActionsHandler.generateError());
   }
 }
