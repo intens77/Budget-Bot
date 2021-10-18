@@ -11,12 +11,16 @@ public class FinanceBot extends TelegramLongPollingBot {
 
   private static HashMap<String, ICommand> commands;
   private static SendMessage messageSender;
+  private Receiver receiver;
+  private Invoker invoker;
 
   public FinanceBot() {
+    receiver = new Receiver();
+    invoker = new Invoker(new StartCommand(receiver), new StrategyCommand(receiver), new ErrorCommand(receiver));
     messageSender = new SendMessage();
     commands = new HashMap<>();
-    commands.put("/start", this::startProcess);
-    commands.put("/get_strategies", this::getStrategies);
+    commands.put("/start", invoker.start);
+    commands.put("/get_strategies", invoker.strategy);
   }
 
   @Override
@@ -44,12 +48,12 @@ public class FinanceBot extends TelegramLongPollingBot {
     return System.getenv("BOT_ACCESS_TOKEN");
   }
 
-  public static String processUserMessage(String message) {
+  public String processUserMessage(String message) {
     if (message != null) {
       if (commands.containsKey(message)) {
-        return commands.get(message).myFunction();
+        return commands.get(message).execute();
       }
-      return generateError();
+      return invoker.error.execute();
     }
     return null;
   }

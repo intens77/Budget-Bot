@@ -1,4 +1,3 @@
 public interface ICommand {
-
-  String myFunction();
+  String execute();
 }
