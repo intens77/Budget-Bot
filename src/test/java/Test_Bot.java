@@ -1,31 +1,34 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class Test_Bot {
 
-  FinanceBot bot;
+  BudgetBot bot;
   String message;
+  ActionsHandler actionsHandler;
 
   @BeforeEach
   void setUp() {
-    bot = new FinanceBot();
-    message = ActionsHandler.readFileContent("start.txt");
+    bot = new BudgetBot();
+    actionsHandler = new ActionsHandler();
+    message = SecondaryFunctions.readFileContent("start.txt");
   }
 
   @Test
   void checkStart() {
-    assertEquals(message, ActionsHandler.processUserMessage("/start"));
+    assertEquals(message, actionsHandler.processUserMessage("/start"));
   }
 
   @Test
   void testGetStrategy() {
     assertEquals("Стратегия 1\n Стратегия 2\n Стратегия 3",
-        ActionsHandler.processUserMessage("/get_strategies"));
+        actionsHandler.processUserMessage("/get_strategies"));
   }
 
   @Test
   void testGenerateError() {
-    assertEquals("Я не знаю такую команду:(", ActionsHandler.generateError());
+    assertEquals("Я не знаю такую команду:(", actionsHandler.generateError());
   }
 }

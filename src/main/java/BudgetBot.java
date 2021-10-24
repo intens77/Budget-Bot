@@ -3,19 +3,21 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-public class FinanceBot extends TelegramLongPollingBot {
+public class BudgetBot extends TelegramLongPollingBot {
 
   private static SendMessage messageSender;
+  private static ActionsHandler actionsHandler;
 
-  public FinanceBot() {
+  public BudgetBot() {
     messageSender = new SendMessage();
+    actionsHandler = new ActionsHandler();
   }
 
   @Override
   public void onUpdateReceived(Update update) {
     if (update.hasMessage()) {
       messageSender.setChatId(update.getMessage().getChatId().toString());
-      messageSender.setText(ActionsHandler.processUserMessage(update.getMessage().getText()));
+      messageSender.setText(actionsHandler.processUserMessage(update.getMessage().getText()));
       try {
         execute(messageSender);
       } catch (TelegramApiException e) {
@@ -27,7 +29,7 @@ public class FinanceBot extends TelegramLongPollingBot {
   @Override
   public String getBotUsername() {
 
-    return "FinanceBot";
+    return "BudgetBot";
   }
 
   @Override
