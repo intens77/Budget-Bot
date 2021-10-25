@@ -1,4 +1,3 @@
-public interface ICommand {
-
-  String execute();
+public interface ICommand{
+//  String execute();
 }

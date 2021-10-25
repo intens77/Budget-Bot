@@ -7,10 +7,12 @@ public class BudgetBot extends TelegramLongPollingBot {
 
   private static SendMessage messageSender;
   private static ActionsHandler actionsHandler;
+  public String Message;
 
   public BudgetBot() {
     messageSender = new SendMessage();
     actionsHandler = new ActionsHandler();
+    Message = "";
   }
 
   @Override
