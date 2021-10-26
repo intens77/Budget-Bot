@@ -1,3 +1,3 @@
-public interface IStrategy  {
-    public String execute(String message);
+public interface IStrategy{
+    String execute(String message);
 }
