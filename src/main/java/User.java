@@ -1,19 +1,41 @@
 public class User {
 
-  private String userChatId;
-  private float monthBudget;
+    private final String userId;
+    private float monthBudget;
 
-  public User(String chatId) {
-    userChatId = chatId;
-  }
-
-  public void setMonthBudget(float sum) {
-    if (sum > 0) {
-      this.monthBudget = sum;
+    public User(String userId) {
+        this.userId = userId;
     }
-  }
 
-  public float getMonthBudget() {
-    return this.monthBudget;
-  }
+    public boolean setMonthBudget(float budget) {
+        if (budget > 0) {
+            monthBudget = budget;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean resetMonthBudget(float budget) {
+        return setMonthBudget(budget);
+    }
+
+    public boolean increaseMonthBudget(float sum) {
+        if (sum > 0) {
+            monthBudget += sum;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean decreaseMonthBudget(float sum) {
+        if (sum > 0) {
+            monthBudget -= sum;
+            return true;
+        }
+        return false;
+    }
+
+    public float checkMonthBudget() {
+        return this.monthBudget;
+    }
 }
