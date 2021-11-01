@@ -2,6 +2,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import java.util.HashMap;
 
 public class BudgetBot extends TelegramLongPollingBot {
 
@@ -18,8 +19,11 @@ public class BudgetBot extends TelegramLongPollingBot {
   @Override
   public void onUpdateReceived(Update update) {
     if (update.hasMessage()) {
-      messageSender.setChatId(update.getMessage().getChatId().toString());
-      messageSender.setText(actionsHandler.processUserMessage(update.getMessage().getText()));
+//      messageSender.setChatId(update.getMessage().getChatId().toString());
+//      messageSender.setText(actionsHandler.processUserMessage(update.getMessage().getText()));
+      String id =  update.getMessage().getChatId().toString();
+      messageSender.setChatId(id);
+      messageSender.setText(actionsHandler.processUserMessage(update.getMessage().getText(), id));
       try {
         execute(messageSender);
       } catch (TelegramApiException e) {

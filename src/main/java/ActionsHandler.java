@@ -7,8 +7,8 @@ public class ActionsHandler {
   private static HashMap<String, ICommand> commands;
   private static HashMap<String, IStrategy> strategies;
   private static String strategy;
-  private Integer Finance;
   public User user;
+  private HashMap<String, User> users;
 
 
 //  public HashMap<String, ICommand> getCommands()
@@ -20,24 +20,39 @@ public class ActionsHandler {
     commands = new HashMap<>();
     commands.put("/start", this::startProcess);
     commands.put("/get_strategies", this::getStrategies);
-    commands.put("/statistic", this::get_statistic);
-    strategies = new HashMap<>();
-    strategies.put("/add", this::add_money);
-    strategies.put("/sub", this::sub_money);
-    Finance = 0;
+//    commands.put("/statistic", this::get_statistic);
     user = new User("1");
   }
 
-  public String processUserMessage(String message) {
+//  public String processUserMessage(String message) {
+//    if ((message != null) & (commands.containsKey(message))) {
+//      return commands.get(message).execute();
+//    }
+//    else if (strategies.containsKey(message)){
+////    commands.put("/statistic", this::get_statistic);
+//    strategies = new HashMap<>();
+////    strategies.put("/add", User::add_money);
+////    strategies.put("/sub", User::sub_money);
+//    Finance = 0;
+//    users = new HashMap<>();
+//    strategy = "";
+//  }
+
+  public String processUserMessage(String message, String id) {
+    if (!users.containsKey(id))
+      users.put(id, new User(id));
     if ((message != null) & (commands.containsKey(message))) {
       return commands.get(message).execute();
     }
-    else if (strategies.containsKey(message)){
+    else if (users.get(id).strategies.containsKey(message)){
       strategy = message;
       return "Введите сумму";
     }
     else if (!Objects.equals(strategy, "")) {
-      return strategies.get(strategy).execute(message);
+//      return strategies.get(strategy).execute(message);
+      String result = "Ваш бюджет: " + users.get(id).strategies.get(strategy).execute(message);
+      strategy = "";
+      return result;
     }
     return generateError();
   }
@@ -54,26 +69,36 @@ public class ActionsHandler {
     return "Стратегия 1\n Стратегия 2\n Стратегия 3";
   }
 
-  public String add_money(String message)
-  {
-      strategy = "";
-      Finance += Integer.parseInt(message);
-      return Finance.toString();
-  }
 
-  public String sub_money(String message)
-  {
-    String[] mes = message.split(" ");
-    strategy = "";
-    int expense = Integer.parseInt(mes[1]);
-    user.setExpenses(mes[0], expense);
-    Finance -= expense;
-    return Finance.toString();
-  }
+//  public String get_statistic(){
+//    String statistic = "";
+//    statistic += "У вас осталось" + Finance.toString() + "\n" + user.getExpenses().toString();
+//    return statistic;
+//  }
+//=======
+//    return "Стратегия 1\nСтратегия 2\nСтратегия 3";
+//  }
 
-  public String get_statistic(){
-    String statistic = "";
-    statistic += "У вас осталось" + Finance.toString() + "\n" + user.getExpenses().toString();
-    return statistic;
-  }
+//  public String add_money(String message)
+//  {
+//      strategy = "";
+//      Finance += Integer.parseInt(message);
+//      return Finance.toString();
+//  }
+//
+//  public String sub_money(String message)
+//  {
+//    String[] mes = message.split(" ");
+//    strategy = "";
+//    int expense = Integer.parseInt(mes[1]);
+//    user.setExpenses(mes[0], expense);
+//    Finance -= expense;
+//    return Finance.toString();
+//  }
+
+//  public String get_statistic(){
+//    String statistic = "";
+//    statistic += "У вас осталось" + Finance.toString() + "\n" + user.getExpenses().toString();
+//    return statistic;
+//  }
 }
