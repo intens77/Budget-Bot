@@ -1,7 +1,10 @@
+import java.util.Stack;
+
 public class User {
 
     private final String userId;
     private float monthBudget;
+    private final Stack<ICommand> commandsCallsStack = new Stack<>();
 
     public User(String userId) {
         this.userId = userId;
@@ -37,5 +40,13 @@ public class User {
 
     public float checkMonthBudget() {
         return this.monthBudget;
+    }
+
+    public void push(ICommand lastCalledCommand) {
+        commandsCallsStack.push(lastCalledCommand);
+    }
+
+    public ICommand pop() {
+        return commandsCallsStack.pop();
     }
 }

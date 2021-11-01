@@ -3,35 +3,41 @@ import java.util.HashMap;
 
 public class ActionsHandler {
 
-    private final HashMap<String, ICommand> commands;
+    private final HashMap<String, ICommand> systemCommands;
+    private final HashMap<String, ICommand> usersCommands;
     private final HashMap<String, User> users;
 
     public ActionsHandler() {
-        commands = new HashMap<>();
-        commands.put("/start", this::startProcess);
-        commands.put("/get_strategies", this::getStrategies);
-        commands.put("/increase_budget", this::increaseBudget);
-        commands.put("/decrease_budget", this::decreaseBudget);
-        commands.put("/set_budget", this::setBudget);
-        commands.put("/reset_budget", this::resetBudget);
+        systemCommands = new HashMap<>();
+        usersCommands = new HashMap<>();
         users = new HashMap<>();
+        systemCommands.put("/start", this::startProcess);
+        systemCommands.put("/get_strategies", this::getStrategies);
+        usersCommands.put("/increase_budget", this::increaseBudget);
+        usersCommands.put("/decrease_budget", this::decreaseBudget);
+        usersCommands.put("/set_budget", this::setBudget);
+        usersCommands.put("/reset_budget", this::resetBudget);
     }
 
     public String processUserMessage(String userId, String message) {
         if (!users.containsKey(userId))
             users.put(userId, new User(userId));
-        if ((message != null) & (commands.containsKey(message))) {
-            return commands.get(message).execute(userId, message);
+        if ((message != null) & (systemCommands.containsKey(message))) {
+            return systemCommands.get(message).execute(userId, message);
+        } else if ((message != null) & (usersCommands.containsKey(message))) {
+            users.get(userId).push(usersCommands.get(message));
+            return "Сумма:";
         }
-        return generateError();
+        try {
+            var lasUserCommand = users.get(userId).pop();
+            return lasUserCommand.execute(userId, message);
+        } catch (Exception e) {
+            return generateCommandError();
+        }
     }
 
     public String startProcess(String userId, String message) {
         return SecondaryFunctions.readFileContent("start.txt");
-    }
-
-    public String generateError() {
-        return "Я не знаю такую команду:(";
     }
 
     public String getStrategies(String userId, String message) {
@@ -45,8 +51,7 @@ public class ActionsHandler {
             return String.format("Отлично, Вы установили ваш " +
                             "ежемесячный бюджет. Он составляет %s рублей",
                     currentUser.checkMonthBudget());
-        return "Произошла ошибка. Скорее всего, " +
-                "Вы передали неверный параметр. Пожалуйста, прочитайте инструкцию и попробуйте снова";
+        return generateCommandParameterError();
     }
 
     public String resetBudget(String userId, String message) {
@@ -56,8 +61,7 @@ public class ActionsHandler {
             return String.format("Отлично, Вы переустановили ваш " +
                             "ежемесячный бюджет. Он составляет %s рублей",
                     currentUser.checkMonthBudget());
-        return "Произошла Ошибка. Скорее всего, " +
-                "Вы передали неверный параметр. Пожалуйста, прочитайте инструкцию и попробуйте снова";
+        return generateCommandParameterError();
     }
 
     public String increaseBudget(String userId, String message) {
@@ -67,8 +71,7 @@ public class ActionsHandler {
             return String.format("Отлично, Вы увеличили ваш " +
                             "ежемесячный бюджет. Он составляет %s рублей",
                     currentUser.checkMonthBudget());
-        return "Произошла ошибка. Скорее всего, " +
-                "Вы передали неверный параметр. Пожалуйста, прочитайте инструкцию и попробуйте снова";
+        return generateCommandParameterError();
     }
 
     public String decreaseBudget(String userId, String message) {
@@ -78,7 +81,15 @@ public class ActionsHandler {
             return String.format("Отлично, Вы уменьшили ваш " +
                             "ежемесячный бюджет. Он составляет %s рублей",
                     currentUser.checkMonthBudget());
+        return generateCommandParameterError();
+    }
+
+    public String generateCommandParameterError() {
         return "Произошла ошибка. Скорее всего, " +
                 "Вы передали неверный параметр. Пожалуйста, прочитайте инструкцию и попробуйте снова";
+    }
+
+    public String generateCommandError() {
+        return "Я не знаю такую команду:(";
     }
 }
