@@ -1,66 +1,56 @@
-import java.util.HashMap;
+import java.util.Stack;
 
 public class User {
 
-  private String userChatId;
-  private float monthBudget;
-  private static HashMap<String, Integer> expenses;
-  public HashMap<String, IStrategy> strategies;
+    private final String userId;
+    private float monthBudget;
+    private final Stack<ICommand> commandsCallsStack = new Stack<>();
 
-  public HashMap<String, Integer> getExpenses(){
-    return expenses;
-  }
-
-  public void setExpenses(String message, int num){
-    if (expenses.containsKey(message))
-      expenses.put(message, expenses.get(message) + num);
-  }
-
-  public User(String chatId) {
-    userChatId = chatId;
-    monthBudget = 0;
-    expenses = new HashMap<>();
-    expenses.put("Продукты", 0);
-    expenses.put("Транспорт", 0);
-    expenses.put("Здоровье", 0);
-    strategies = new HashMap<>();
-    strategies.put("/increase_budget", this::Increase_budget);
-    strategies.put("/decrease_budget", this::decreaseBudget);
-    strategies.put("/set_budget", this::setBudget);
-    strategies.put("/reset_budget", this::resetBudget);
-  }
-
-  public void setMonthBudget(float sum) {
-    if (sum > 0) {
-      this.monthBudget = sum;
+    public User(String userId) {
+        this.userId = userId;
     }
-  }
 
-  public float getMonthBudget() {
-    return this.monthBudget;
-  }
+    public String getUserId() {
+        return userId;
+    }
 
-  public String Increase_budget(String message)
-  {
-    monthBudget+= Integer.parseInt(message);
-    return String.valueOf(monthBudget);
-  }
+    public boolean setMonthBudget(float budget) {
+        if (budget > 0) {
+            monthBudget = budget;
+            return true;
+        }
+        return false;
+    }
 
-  public String decreaseBudget(String message)
-  {
-//    String[] mes = message.split(" ");
-//    int expense = Integer.parseInt(mes[1]);
-//    setExpenses(mes[0], expense);
+    public boolean resetMonthBudget(float budget) {
+        return setMonthBudget(budget);
+    }
 
-    monthBudget-= Integer.parseInt(message);
-    return String.valueOf(monthBudget);
-  }
+    public boolean increaseMonthBudget(float sum) {
+        if (sum > 0) {
+            monthBudget += sum;
+            return true;
+        }
+        return false;
+    }
 
-  public String setBudget(String message){
-    monthBudget = Integer.parseInt(message);
-    return String.valueOf(monthBudget);
-  }
-  public String resetBudget(String message){
-    return setBudget(message);
-  }
+    public boolean decreaseMonthBudget(float sum) {
+        if (sum > 0 & monthBudget >= sum) {
+            monthBudget -= sum;
+            return true;
+        }
+        return false;
+    }
+
+    public float checkMonthBudget() {
+        return this.monthBudget;
+    }
+
+    public void push(ICommand lastCalledCommand) {
+        commandsCallsStack.push(lastCalledCommand);
+    }
+
+    public ICommand pop() {
+        return commandsCallsStack.pop();
+    }
 }

@@ -1,104 +1,97 @@
 import java.util.HashMap;
-import java.util.Objects;
 
 
 public class ActionsHandler {
 
-  private static HashMap<String, ICommand> commands;
-  private static HashMap<String, IStrategy> strategies;
-  private static String strategy;
-  public User user;
-  private HashMap<String, User> users;
+    private final HashMap<String, ICommand> systemCommands;
+    private final HashMap<String, ICommand> usersCommands;
+    private final HashMap<String, User> users;
 
-
-//  public HashMap<String, ICommand> getCommands()
-//  {
-//    return commands;
-//  }
-
-  public ActionsHandler() {
-    commands = new HashMap<>();
-    commands.put("/start", this::startProcess);
-    commands.put("/get_strategies", this::getStrategies);
-//    commands.put("/statistic", this::get_statistic);
-    user = new User("1");
-  }
-
-//  public String processUserMessage(String message) {
-//    if ((message != null) & (commands.containsKey(message))) {
-//      return commands.get(message).execute();
-//    }
-//    else if (strategies.containsKey(message)){
-////    commands.put("/statistic", this::get_statistic);
-//    strategies = new HashMap<>();
-////    strategies.put("/add", User::add_money);
-////    strategies.put("/sub", User::sub_money);
-//    Finance = 0;
-//    users = new HashMap<>();
-//    strategy = "";
-//  }
-
-  public String processUserMessage(String message, String id) {
-    if (!users.containsKey(id))
-      users.put(id, new User(id));
-    if ((message != null) & (commands.containsKey(message))) {
-      return commands.get(message).execute();
+    public ActionsHandler() {
+        systemCommands = new HashMap<>();
+        usersCommands = new HashMap<>();
+        users = new HashMap<>();
+        systemCommands.put("/start", this::startProcess);
+        systemCommands.put("/get_strategies", this::getStrategies);
+        systemCommands.put("/check_budget", this::checkBudget);
+        usersCommands.put("/increase_budget", this::increaseBudget);
+        usersCommands.put("/decrease_budget", this::decreaseBudget);
+        usersCommands.put("/set_budget", this::setBudget);
+        usersCommands.put("/reset_budget", this::resetBudget);
     }
-    else if (users.get(id).strategies.containsKey(message)){
-      strategy = message;
-      return "Введите сумму";
+
+    public String processUserMessage(String userId, String message) {
+        if (!users.containsKey(userId))
+            users.put(userId, new User(userId));
+        if ((message != null) & (systemCommands.containsKey(message))) {
+            return systemCommands.get(message).execute(users.get(userId), message);
+        } else if ((message != null) & (usersCommands.containsKey(message))) {
+            users.get(userId).push(usersCommands.get(message));
+            return "Сумма:";
+        } else {
+            try {
+                var lastUserCommand = users.get(userId).pop();
+                return lastUserCommand.execute(users.get(userId), message);
+            } catch (Exception e) {
+                return generateCommandError();
+            }
+        }
     }
-    else if (!Objects.equals(strategy, "")) {
-//      return strategies.get(strategy).execute(message);
-      String result = "Ваш бюджет: " + users.get(id).strategies.get(strategy).execute(message);
-      strategy = "";
-      return result;
+
+    public String startProcess(User user, String message) {
+        return SecondaryFunctions.readFileContent("start.txt");
     }
-    return generateError();
-  }
 
-  public String startProcess() {
-    return SecondaryFunctions.readFileContent("start.txt");
-  }
+    public String getStrategies(User user, String message) {
+        return "Стратегия 1\n Стратегия 2\n Стратегия 3";
+    }
 
-  public String generateError() {
-    return "Я не знаю такую команду:(";
-  }
+    public String setBudget(User user, String message) {
+        var operationResult = user.setMonthBudget(Float.parseFloat(message));
+        if (operationResult)
+            return String.format("Отлично, Вы установили ваш " +
+                            "ежемесячный бюджет. Он составляет %s рублей",
+                    user.checkMonthBudget());
+        return generateCommandParameterError();
+    }
 
-  public String getStrategies() {
-    return "Стратегия 1\n Стратегия 2\n Стратегия 3";
-  }
+    public String resetBudget(User user, String message) {
+        var operationResult = user.resetMonthBudget(Float.parseFloat(message));
+        if (operationResult)
+            return String.format("Отлично, Вы переустановили ваш " +
+                            "ежемесячный бюджет. Он составляет %s рублей",
+                    user.checkMonthBudget());
+        return generateCommandParameterError();
+    }
 
+    public String increaseBudget(User user, String message) {
+        var operationResult = user.increaseMonthBudget(Float.parseFloat(message));
+        if (operationResult)
+            return String.format("Отлично, Вы увеличили ваш " +
+                            "ежемесячный бюджет. Он составляет %s рублей",
+                    user.checkMonthBudget());
+        return generateCommandParameterError();
+    }
 
-//  public String get_statistic(){
-//    String statistic = "";
-//    statistic += "У вас осталось" + Finance.toString() + "\n" + user.getExpenses().toString();
-//    return statistic;
-//  }
-//=======
-//    return "Стратегия 1\nСтратегия 2\nСтратегия 3";
-//  }
+    public String decreaseBudget(User user, String message) {
+        var operationResult = user.decreaseMonthBudget(Float.parseFloat(message));
+        if (operationResult)
+            return String.format("Отлично, Вы уменьшили ваш " +
+                            "ежемесячный бюджет. Он составляет %s рублей",
+                    user.checkMonthBudget());
+        return generateCommandParameterError();
+    }
 
-//  public String add_money(String message)
-//  {
-//      strategy = "";
-//      Finance += Integer.parseInt(message);
-//      return Finance.toString();
-//  }
-//
-//  public String sub_money(String message)
-//  {
-//    String[] mes = message.split(" ");
-//    strategy = "";
-//    int expense = Integer.parseInt(mes[1]);
-//    user.setExpenses(mes[0], expense);
-//    Finance -= expense;
-//    return Finance.toString();
-//  }
+    public String checkBudget(User user, String message) {
+        return String.format("Ваш текущий бюджет: %s", user.checkMonthBudget());
+    }
 
-//  public String get_statistic(){
-//    String statistic = "";
-//    statistic += "У вас осталось" + Finance.toString() + "\n" + user.getExpenses().toString();
-//    return statistic;
-//  }
+    public static String generateCommandParameterError() {
+        return "Произошла ошибка. Скорее всего, " +
+                "Вы передали неверный параметр. Пожалуйста, прочитайте инструкцию и попробуйте снова";
+    }
+
+    public static String generateCommandError() {
+        return "Я не знаю такую команду:(";
+    }
 }
