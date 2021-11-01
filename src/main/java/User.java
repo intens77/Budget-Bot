@@ -10,6 +10,10 @@ public class User {
         this.userId = userId;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
     public boolean setMonthBudget(float budget) {
         if (budget > 0) {
             monthBudget = budget;
@@ -31,7 +35,7 @@ public class User {
     }
 
     public boolean decreaseMonthBudget(float sum) {
-        if (sum > 0) {
+        if (sum > 0 & monthBudget >= sum) {
             monthBudget -= sum;
             return true;
         }

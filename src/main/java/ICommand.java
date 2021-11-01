@@ -1,3 +1,3 @@
 public interface ICommand {
-    String execute(String userId, String message);
+    String execute(User user, String message);
 }
