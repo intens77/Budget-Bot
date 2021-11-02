@@ -26,11 +26,11 @@ public class ActionsHandler {
         if ((message != null) & (systemCommands.containsKey(message))) {
             return systemCommands.get(message).execute(users.get(userId), message);
         } else if ((message != null) & (usersCommands.containsKey(message))) {
-            users.get(userId).push(usersCommands.get(message));
+            users.get(userId).saveLastUserCommand(usersCommands.get(message));
             return "Сумма:";
         } else {
             try {
-                var lastUserCommand = users.get(userId).pop();
+                var lastUserCommand = users.get(userId).getLastUserCommand();
                 return lastUserCommand.execute(users.get(userId), message);
             } catch (Exception e) {
                 return generateCommandError();

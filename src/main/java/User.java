@@ -46,11 +46,11 @@ public class User {
         return this.monthBudget;
     }
 
-    public void push(ICommand lastCalledCommand) {
+    public void saveLastUserCommand(ICommand lastCalledCommand) {
         commandsCallsStack.push(lastCalledCommand);
     }
 
-    public ICommand pop() {
+    public ICommand getLastUserCommand() {
         return commandsCallsStack.pop();
     }
 }
