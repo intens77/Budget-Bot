@@ -1,0 +1,7 @@
+start - start bot
+get_strategies - get list of strategies
+set_budget - set month budget
+increase_budget - increase month budget
+decrease_budget - decrease month budget
+reset_budget - reset month budget
+check_budget - check your current budget
