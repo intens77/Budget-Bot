@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class ActionsHandler {
@@ -14,10 +15,15 @@ public class ActionsHandler {
         systemCommands.put("/start", this::startProcess);
         systemCommands.put("/get_strategies", this::getStrategies);
         systemCommands.put("/check_budget", this::checkBudget);
+        systemCommands.put("/check_stat", this::checkStatistic);
         usersCommands.put("/increase_budget", this::increaseBudget);
         usersCommands.put("/decrease_budget", this::decreaseBudget);
         usersCommands.put("/set_budget", this::setBudget);
         usersCommands.put("/reset_budget", this::resetBudget);
+        usersCommands.put("/add_category", this::addCategory);
+    }
+    public HashMap<String, User> getUsers() {
+        return users;
     }
 
     public String processUserMessage(String userId, String message) {
@@ -27,7 +33,7 @@ public class ActionsHandler {
             return systemCommands.get(message).execute(users.get(userId), message);
         } else if ((message != null) & (usersCommands.containsKey(message))) {
             users.get(userId).push(usersCommands.get(message));
-            return "Сумма:";
+            return "Введите сумму или параметры:";
         } else {
             try {
                 var lastUserCommand = users.get(userId).pop();
@@ -74,7 +80,7 @@ public class ActionsHandler {
     }
 
     public String decreaseBudget(User user, String message) {
-        var operationResult = user.decreaseMonthBudget(Float.parseFloat(message));
+        var operationResult = user.decreaseWithCategory(message);
         if (operationResult)
             return String.format("Отлично, Вы уменьшили ваш " +
                             "ежемесячный бюджет. Он составляет %s рублей",
@@ -93,5 +99,25 @@ public class ActionsHandler {
 
     public static String generateCommandError() {
         return "Я не знаю такую команду:(";
+    }
+
+    public String addCategory(User user, String message){
+        user.addCategory(message);
+        return "Вы добавили новую категорию расходов " + message;
+    }
+
+    public String checkStatistic(User user, String message){
+        StringBuilder result = new StringBuilder();
+        var sum = 0F;
+        result.append("Ваши расходы по категориям:\n");
+        for (Map.Entry<String, Float> entry : user.getCategories().entrySet())
+        {
+            String key = entry.getKey();
+            Float value = entry.getValue();
+            sum += value;
+            result.append(key).append(": ").append(value).append("\n");
+        }
+        result.append("Всего вы потратили: ").append(sum);
+        return result.toString();
     }
 }

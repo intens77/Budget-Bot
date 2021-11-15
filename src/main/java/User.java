@@ -1,13 +1,18 @@
+import java.util.HashMap;
 import java.util.Stack;
 
 public class User {
 
     private final String userId;
     private float monthBudget;
-    private final Stack<ICommand> commandsCallsStack = new Stack<>();
+    private ICommand commandCall = null;
+    private final HashMap<String, Float> categories = new HashMap<>();
 
     public User(String userId) {
         this.userId = userId;
+        categories.put("Транспорт", 0F);
+        categories.put("Продукты", 0F);
+        categories.put("Кафе", 0F);
     }
 
     public String getUserId() {
@@ -42,15 +47,32 @@ public class User {
         return false;
     }
 
+    public boolean decreaseWithCategory(String message){
+        var split_message = message.split(" ");
+        var sum = Float.parseFloat(split_message[1]);
+        categories.put(split_message[0], categories.get(split_message[0]) + sum);
+        return decreaseMonthBudget(sum);
+    }
+
     public float checkMonthBudget() {
         return this.monthBudget;
     }
 
+    public HashMap<String, Float> getCategories(){
+        return categories;
+    }
+
+    public void addCategory(String message) {
+        categories.put(message, 0F);
+    }
+
     public void push(ICommand lastCalledCommand) {
-        commandsCallsStack.push(lastCalledCommand);
+        commandCall = lastCalledCommand;
     }
 
     public ICommand pop() {
-        return commandsCallsStack.pop();
+        var command = commandCall;
+        commandCall = null;
+        return command;
     }
 }
