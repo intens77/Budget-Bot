@@ -1,10 +1,13 @@
-import java.util.Stack;
+package WorkingClasses;
+
+
+import Patterns.ICommand;
 
 public class User {
 
     private final String userId;
     private float monthBudget;
-    private final Stack<ICommand> commandsCallsStack = new Stack<>();
+    private ICommand lastCalledCommand;
 
     public User(String userId) {
         this.userId = userId;
@@ -47,10 +50,12 @@ public class User {
     }
 
     public void saveLastUserCommand(ICommand lastCalledCommand) {
-        commandsCallsStack.push(lastCalledCommand);
+        this.lastCalledCommand = lastCalledCommand;
     }
 
     public ICommand getLastUserCommand() {
-        return commandsCallsStack.pop();
+        var result = lastCalledCommand;
+        lastCalledCommand = null;
+        return result;
     }
 }
