@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class ActionsHandler {
 
     private final HashMap<String, Command> systemCommands;
-    private final HashMap<String, Patterns.ICommand> usersCommands;
+    private final HashMap<String, Command> usersCommands;
     private final HashMap<String, User> users;
 
     public ActionsHandler() {
