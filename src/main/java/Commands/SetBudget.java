@@ -5,6 +5,10 @@ import WorkingClasses.ServiceFunctions;
 import WorkingClasses.User;
 
 public class SetBudget extends Command {
+    public SetBudget(Integer limitParameter) {
+        super(limitParameter);
+    }
+
     @Override
     public String execute(User user, String message) {
         var operationResult = user.setMonthBudget(Float.parseFloat(message));

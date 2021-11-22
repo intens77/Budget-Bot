@@ -5,6 +5,10 @@ import WorkingClasses.ServiceFunctions;
 import WorkingClasses.User;
 
 public class ResetBudget extends Command {
+    public ResetBudget(Integer limitParameter) {
+        super(limitParameter);
+    }
+
     public String execute(User user, String message) {
         var operationResult = user.resetMonthBudget(Float.parseFloat(message));
         if (operationResult)

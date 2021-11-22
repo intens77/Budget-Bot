@@ -5,6 +5,10 @@ import WorkingClasses.ServiceFunctions;
 import WorkingClasses.User;
 
 public class IncreaseBudget extends Command {
+    public IncreaseBudget(Integer limitParameter) {
+        super(limitParameter);
+    }
+
     public String execute(User user, String message) {
         var operationResult = user.increaseMonthBudget(Float.parseFloat(message));
         if (operationResult)

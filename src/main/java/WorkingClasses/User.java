@@ -1,12 +1,19 @@
+package WorkingClasses;
+
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.Stack;
+import Patterns.Command;
 
 public class User {
 
     private final String userId;
     private float monthBudget;
-    private ICommand commandCall = null;
+    private Command commandCall = null;
     private final HashMap<String, Float> categories = new HashMap<>();
+
+    private String lastCategory = null;
 
     public User(String userId) {
         this.userId = userId;
@@ -50,8 +57,11 @@ public class User {
     public boolean decreaseWithCategory(String message){
         var split_message = message.split(" ");
         var sum = Float.parseFloat(split_message[1]);
-        categories.put(split_message[0], categories.get(split_message[0]) + sum);
-        return decreaseMonthBudget(sum);
+        if (categories.containsKey(split_message[0])){
+            categories.put(split_message[0], categories.get(split_message[0]) + sum);
+            return decreaseMonthBudget(sum);
+        }
+        else return false;
     }
 
     public float checkMonthBudget() {
@@ -66,13 +76,21 @@ public class User {
         categories.put(message, 0F);
     }
 
-    public void push(ICommand lastCalledCommand) {
+    public void setLastUserCommand(Command lastCalledCommand) {
         commandCall = lastCalledCommand;
     }
 
-    public ICommand pop() {
-        var command = commandCall;
-        commandCall = null;
-        return command;
+    public Command getLastUserCommand() {
+        return commandCall;
+    }
+
+    public String getLastCategory() {
+        var commandCall = lastCategory;
+        lastCategory = null;
+        return commandCall;
+    }
+
+    public void setLastCategory(String lastCategory) {
+        this.lastCategory = lastCategory;
     }
 }
