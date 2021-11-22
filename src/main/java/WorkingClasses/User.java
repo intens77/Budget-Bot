@@ -1,13 +1,10 @@
 package WorkingClasses;
 
 
-import Patterns.Command;
-
 public class User {
 
     private final String userId;
     private float monthBudget;
-    private Command lastCalledCommand;
 
     public User(String userId) {
         this.userId = userId;
@@ -47,15 +44,5 @@ public class User {
 
     public float checkMonthBudget() {
         return this.monthBudget;
-    }
-
-    public void saveLastUserCommand(Command lastCalledCommand) {
-        this.lastCalledCommand = lastCalledCommand;
-    }
-
-    public Command getLastUserCommand() {
-        var result = lastCalledCommand;
-        lastCalledCommand = null;
-        return result;
     }
 }
