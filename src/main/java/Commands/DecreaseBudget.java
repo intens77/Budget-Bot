@@ -2,7 +2,7 @@ package Commands;
 
 import Patterns.Command;
 import WorkingClasses.ServiceFunctions;
-import WorkingClasses.User;
+import Objects.User;
 
 public class DecreaseBudget extends Command {
     public String execute(User user, String message) {

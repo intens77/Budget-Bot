@@ -1,7 +1,8 @@
 package Commands;
 
 import Patterns.Command;
-import WorkingClasses.User;
+import Objects.User;
+
 
 public class GetStrategies extends Command {
     @Override

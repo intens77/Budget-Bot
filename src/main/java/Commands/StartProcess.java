@@ -2,7 +2,8 @@ package Commands;
 
 import Patterns.Command;
 import WorkingClasses.ServiceFunctions;
-import WorkingClasses.User;
+import Objects.User;
+
 
 public class StartProcess extends Command {
     @Override

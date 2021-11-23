@@ -1,7 +1,8 @@
 package Commands;
 
+import Objects.User;
 import Patterns.Command;
-import WorkingClasses.User;
+
 
 public class CheckBudget extends Command {
     @Override
