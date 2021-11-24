@@ -18,12 +18,12 @@ public class CommandsTests {
 
     @BeforeEach
     void setUp() {
-        parameterRequestMessage = "Введите сумму или параметры:";
+        parameterRequestMessage = "Введите параметры:";
         actionsHandler = new ActionsHandler();
         userId = System.getenv("MY_CHAT_ID");
         budget = 1000;
-        productsCosts = "Продукты 200";
-        cafeCosts = "Кафе 500";
+        productsCosts = "Продукты, 200";
+        cafeCosts = "Кафе, 500";
         parameterErrorMessage = ServiceFunctions.generateCommandParameterError();
         commandError = ServiceFunctions.generateCommandError();
     }
@@ -85,23 +85,27 @@ public class CommandsTests {
 
     @Test
     void testNegativelyDecreaseBudget() {
-        String decrease = "Кафе 100";
+        String decrease = "Кафе";
+        String sum = "-100";
         assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId,
                 "/decrease_budget"));
-        assertEquals(parameterErrorMessage, actionsHandler.processUserMessage(userId, decrease));
+        actionsHandler.processUserMessage(userId, decrease);
+        assertEquals(parameterErrorMessage, actionsHandler.processUserMessage(userId, sum));
     }
 
     @Test
     void testPositivelyDecreasePositiveBudget() {
-        String decrease = "Продукты 100";
+        String decrease = "Продукты";
+        String sum = "100";
         actionsHandler.processUserMessage(userId, "/set_budget");
         actionsHandler.processUserMessage(userId, String.valueOf(budget));
         assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId,
                 "/decrease_budget"));
         String expected = String.format("Отлично, Вы уменьшили ваш " +
                         "ежемесячный бюджет. Он составляет %s рублей",
-                budget - Float.parseFloat(decrease.split(" ")[1]));
-        String actual = actionsHandler.processUserMessage(userId, decrease);
+                budget - Float.parseFloat(sum));
+        actionsHandler.processUserMessage(userId, decrease);
+        String actual = actionsHandler.processUserMessage(userId, sum);
         assertEquals(expected, actual);
     }
 
@@ -144,40 +148,33 @@ public class CommandsTests {
         SetBudget setBudget = new SetBudget(1);
         DecreaseBudget decreaseBudget = new DecreaseBudget(2);
         float budget = 1000;
-        String productsCosts = "Продукты 200";
         setBudget.execute(user, String.valueOf(budget));
         decreaseBudget.execute(user, productsCosts);
-//        actionsHandler.processUserMessage(userId, String.valueOf(budget));//setBudget(user, String.valueOf(budget));
-//        actionsHandler.decreaseBudget(user, productsCosts);
-        assertEquals(200, (float) user.getCategories().get("Продукты"));
+        var sum = user.getCategories().stream().filter(x -> x.name.equals("Продукты")).findFirst().get();
+        assertEquals(200, sum.getAmountSpent());
     }
-    @Test
-    void testWrongCategory() {
-        actionsHandler.processUserMessage(userId, "/set_budget");
-        actionsHandler.processUserMessage(userId, "10000");
-        actionsHandler.processUserMessage(userId, "/decrease_budget");
-        assertEquals(parameterErrorMessage, actionsHandler.processUserMessage(userId, "qwerty 1000"));
-    }
+
     @Test
     void testAddCategory() {
         User user = new User(userId);
-        AddCategory addCategory = new AddCategory();
+        AddCategory addCategory = new AddCategory(1);
         addCategory.execute(user, "Прочее");
-//        actionsHandler.addCategory(user, "/add_category");
-//        actionsHandler.addCategory(user, "Прочее");
-        assertTrue(user.getCategories().containsKey("Прочее"));
+        assertTrue(user.getCategories().stream().anyMatch(x -> x.name.equals("Прочее")));
     }
-//    @Test
-//    void testCheckStatistic() {
-//        User user = new User(userId);
-//        actionsHandler.setBudget(user, String.valueOf(budget));
-//        actionsHandler.decreaseBudget(user, productsCosts);
-//        actionsHandler.decreaseBudget(user, cafeCosts);
-//        String result = "Ваши расходы по категориям:\n" +
-//                "Транспорт: 0.0\n" + "Продукты: 200.0\n" + "Кафе: 500.0\n" +
-//                "Всего вы потратили: 700.0";
-//        assertEquals(result, actionsHandler.checkStatistic(user, "/check_stat"));
-//    }
+    @Test
+    void testCheckStatistic() {
+        User user = new User(userId);
+        var setBudget = new SetBudget(1);
+        var decreaseBudget = new DecreaseBudget(2);
+
+        setBudget.execute(user, String.valueOf(budget));
+        decreaseBudget.execute(user, productsCosts);
+        decreaseBudget.execute(user, cafeCosts);
+        String result = "Ваши расходы по категориям:\n" +
+                "Транспорт: 0.0\n" + "Продукты: 200.0\n" + "Кафе: 500.0\n" +
+                "Всего вы потратили: 700.0";
+        assertEquals(result, new CheckStatistic(1).execute(user, "/check_stat"));
+    }
     @Test
     void testCheckFunctionality() {
         User user = new User(userId);
@@ -185,13 +182,26 @@ public class CommandsTests {
         assertEquals(budget, user.checkMonthBudget());
         float increase = 5000;
         user.increaseMonthBudget(increase);
-        user.decreaseWithCategory("Продукты 1000");
-        assertEquals(1000, user.getCategories().get("Продукты"));
+        user.decreaseWithCategory("Продукты, 1000");
+        assertEquals(1000, user.getCategories()
+                .stream()
+                .filter(x -> x.name.equals("Продукты")).
+                findFirst().get().getAmountSpent());
         user.addCategory("Прочее");
-        assertTrue(user.getCategories().containsKey("Прочее"));
-        user.decreaseWithCategory("Прочее 500");
+        assertTrue(user.getCategories().stream().anyMatch(x -> x.name.equals("Прочее")));
+        user.decreaseWithCategory("Прочее, 500");
         assertEquals(4500.0, user.checkMonthBudget());
         user.resetMonthBudget(20000f);
         assertEquals(20000f, user.checkMonthBudget());
+    }
+
+    @Test
+    void testCheckTwoUsers(){
+        actionsHandler.processUserMessage("1", "/set_budget");
+        actionsHandler.processUserMessage("2", "/set_budget");
+        actionsHandler.processUserMessage("2", "10000");
+        actionsHandler.processUserMessage("1", "15000");
+        assertEquals(10000, actionsHandler.getUsers().get("2").checkMonthBudget());
+        assertEquals(15000, actionsHandler.getUsers().get("1").checkMonthBudget());
     }
 }

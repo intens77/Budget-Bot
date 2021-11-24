@@ -13,11 +13,16 @@ public final class BudgetBot extends TelegramLongPollingBot {
 
     private static SendMessage messageSender;
     private static ActionsHandler actionsHandler;
-    ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+    ReplyKeyboardMarkup replyKeyboardMarkup;
+    ReplyKeyboardMarkup categoriesKeyboard;
 
     public BudgetBot() {
         messageSender = new SendMessage();
         actionsHandler = new ActionsHandler();
+        replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        categoriesKeyboard = new ReplyKeyboardMarkup();
+        setCommand(replyKeyboardMarkup, actionsHandler.getCommand());
+        messageSender.setReplyMarkup(replyKeyboardMarkup);
     }
 
     @Override
@@ -26,10 +31,13 @@ public final class BudgetBot extends TelegramLongPollingBot {
             var userId = update.getMessage().getChatId().toString();
             messageSender.setChatId(userId);
             messageSender.setText(actionsHandler.processUserMessage(userId, update.getMessage().getText()));
-            if (update.getMessage().getText().equals("/decrease_budget")){
-                setKeyboard(replyKeyboardMarkup, userId);
-                messageSender.setReplyMarkup(replyKeyboardMarkup);
+            if (update.getMessage().getText().equals("/decrease_budget")) {
+                setCommand(categoriesKeyboard, actionsHandler.getUsers().get(userId).getCategoriesName());
+                messageSender.setReplyMarkup(categoriesKeyboard);
             }
+            else
+                messageSender.setReplyMarkup(replyKeyboardMarkup);
+
             try {
                 execute(messageSender);
             } catch (TelegramApiException e) {
@@ -38,13 +46,11 @@ public final class BudgetBot extends TelegramLongPollingBot {
         }
     }
 
-    public void setKeyboard(ReplyKeyboardMarkup replyKeyboardMarkup, String userId){
-        var user = actionsHandler.getUsers().get(userId);
-        var categories = user.getCategories().keySet();
+    public void setCommand(ReplyKeyboardMarkup replyKeyboardMarkup, ArrayList<String> strArray){
         ArrayList<KeyboardRow> keyboardRows = new ArrayList<>();
-        for (String category: categories) {
+        for (String str: strArray){
             var row = new KeyboardRow();
-            row.add(category);
+            row.add(str);
             keyboardRows.add(row);
         }
         replyKeyboardMarkup.setKeyboard(keyboardRows);

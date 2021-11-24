@@ -1,25 +1,20 @@
 package WorkingClasses;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-import Patterns.Command;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class User {
 
     private final String userId;
     private float monthBudget;
-    private Command commandCall = null;
-    private final HashMap<String, Float> categories = new HashMap<>();
+    private final ArrayList<Category> categories = new ArrayList<>();
 
-    private String lastCategory = null;
 
     public User(String userId) {
         this.userId = userId;
-        categories.put("Транспорт", 0F);
-        categories.put("Продукты", 0F);
-        categories.put("Кафе", 0F);
+        categories.add(new Category("Транспорт", 0f, this));
+        categories.add(new Category("Продукты", 0f, this));
+        categories.add(new Category("Кафе", 0f, this));
     }
 
     public String getUserId() {
@@ -55,42 +50,33 @@ public class User {
     }
 
     public boolean decreaseWithCategory(String message){
-        var split_message = message.split(" ");
+        var split_message = message.split(", ");
+        var category = split_message[0];
         var sum = Float.parseFloat(split_message[1]);
-        if (categories.containsKey(split_message[0])){
-            categories.put(split_message[0], categories.get(split_message[0]) + sum);
-            return decreaseMonthBudget(sum);
-        }
-        else return false;
+        if (!containsCategory(category))
+            addCategory(category);
+        var cur = categories.stream().filter(x -> x.name.equals(category)).findFirst().get();
+        cur.setAmountSpent(sum);
+        return decreaseMonthBudget(sum);
     }
 
     public float checkMonthBudget() {
         return this.monthBudget;
     }
 
-    public HashMap<String, Float> getCategories(){
+    public ArrayList<Category> getCategories(){
         return categories;
     }
 
+    public ArrayList<String> getCategoriesName() {
+        return categories.stream().map(x -> x.name).collect(Collectors.toCollection(ArrayList::new));
+    }
+
     public void addCategory(String message) {
-        categories.put(message, 0F);
+        categories.add(new Category(message, 0f, this));
     }
 
-    public void setLastUserCommand(Command lastCalledCommand) {
-        commandCall = lastCalledCommand;
-    }
-
-    public Command getLastUserCommand() {
-        return commandCall;
-    }
-
-    public String getLastCategory() {
-        var commandCall = lastCategory;
-        lastCategory = null;
-        return commandCall;
-    }
-
-    public void setLastCategory(String lastCategory) {
-        this.lastCategory = lastCategory;
+    public boolean containsCategory(String message){
+        return categories.stream().anyMatch(category -> category.name.equals(message));
     }
 }

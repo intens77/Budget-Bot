@@ -4,8 +4,8 @@ import Commands.*;
 import Patterns.*;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 
 public class ActionsHandler {
@@ -13,13 +13,13 @@ public class ActionsHandler {
     private final HashMap<String, Command> systemCommands;
     private final HashMap<String, Command> usersCommands;
     private final HashMap<String, User> users;
-    private final LinkedList<CommandCall> commandsQueue;
+    private final HashMap<String, Command> usersCommandsCalls;
 
     public ActionsHandler() {
         systemCommands = new HashMap<>();
         usersCommands = new HashMap<>();
         users = new HashMap<>();
-        commandsQueue = new LinkedList<>();
+        usersCommandsCalls = new HashMap<>();
         systemCommands.put("/start", new StartProcess(0));
         systemCommands.put("/get_strategies", new GetStrategies(0));
         systemCommands.put("/check_budget", new CheckBudget(0));
@@ -37,27 +37,28 @@ public class ActionsHandler {
         if ((message != null) & (systemCommands.containsKey(message))) {
             return systemCommands.get(message).execute(users.get(userId), message);
         } else if ((message != null) & (usersCommands.containsKey(message))) {
-            commandsQueue.add(new CommandCall(users.get(userId), usersCommands.get(message)));
-            return "Сумма:";
-//            users.get(userId).setLastUserCommand(usersCommands.get(message));
-//            return "Введите сумму или параметры:";
-
-//        } else if (users.get(userId).getLastUserCommand() == usersCommands.get("/decrease_budget")){
-//            users.get(userId).setLastCategory(message);
-//            return String.format("Введите сумму для категории %s", message);}
+            usersCommands.get(message).getParameters().clear();
+            usersCommandsCalls.put(userId, usersCommands.get(message));
+            return "Введите параметры:";
         }else {
-            var lastUserCommand = users.get(userId).getLastUserCommand();
-//            if (lastUserCommand == usersCommands.get("/decrease_budget"))
-//                return usersCommands.get("/add_category").execute(users.get(userId), message);
-            if (lastUserCommand != null){
-                users.get(userId).setLastUserCommand(null);
-                return lastUserCommand.execute(users.get(userId), message);
-            }
-            return ServiceFunctions.generateCommandError();
+            if (usersCommandsCalls.isEmpty()) return ServiceFunctions.generateCommandError();
+            usersCommandsCalls.get(userId).getParameters().add(message);
+            if (!usersCommandsCalls.get(userId).isEnough())
+                return "Впишите дополнительные параметры";
+            Command processingCommandCall = usersCommandsCalls.get(userId);
+            usersCommandsCalls.remove(userId);
+            return processingCommandCall.execute(users.get(userId),
+                    String.join(", ",processingCommandCall.getParameters()));
         }
     }
 
     public HashMap<String, User> getUsers(){
         return users;
+    }
+
+    public ArrayList<String> getCommand() {
+        var strCommands = new ArrayList<>(systemCommands.keySet());
+        strCommands.addAll(usersCommands.keySet());
+        return strCommands;
     }
 }

@@ -10,9 +10,9 @@ public class AddCategory extends Command {
 
     @Override
     public String execute(User user, String message) {
-        if (user.getCategories().containsKey(message))
-            return "Категория " + message;
+        if (user.containsCategory(message))
+            return "Категория уже существует";
         user.addCategory(message);
-        return "Вы добавили новую категорию расходов " + message;
+        return "Добавлена категория " + message;
     }
 }

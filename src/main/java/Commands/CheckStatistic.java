@@ -1,9 +1,8 @@
 package Commands;
 
 import Patterns.Command;
+import WorkingClasses.Category;
 import WorkingClasses.User;
-
-import java.util.Map;
 
 public class CheckStatistic extends Command {
     public CheckStatistic(Integer limitParameter) {
@@ -15,12 +14,10 @@ public class CheckStatistic extends Command {
         StringBuilder result = new StringBuilder();
         var sum = 0F;
         result.append("Ваши расходы по категориям:\n");
-        for (Map.Entry<String, Float> entry : user.getCategories().entrySet())
+        for (Category category : user.getCategories())
         {
-            String key = entry.getKey();
-            Float value = entry.getValue();
-            sum += value;
-            result.append(key).append(": ").append(value).append("\n");
+            sum += category.getAmountSpent();
+            result.append(category).append("\n");
         }
         result.append("Всего вы потратили: ").append(sum);
         return result.toString();
