@@ -14,6 +14,7 @@ public class User {
     @Column(name = "telegram_id")
     private String telegramId;
 
+    @Column(name = "month_budget")
     private float monthBudget;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
