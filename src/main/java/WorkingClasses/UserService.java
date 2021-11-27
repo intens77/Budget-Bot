@@ -6,32 +6,36 @@ import Objects.User;
 import java.util.List;
 
 public class UserService {
-    private final UserDataAccessObject usersDao = new UserDataAccessObject();
+    private static final UserDataAccessObject usersDao = new UserDataAccessObject();
 
     public UserService() {
     }
 
-    public User findUser(int id) {
+    public static User findUser(int id) {
         return usersDao.findUserById(id);
     }
 
-    public void rememberUser(User user) {
+    public static void rememberUser(User user) {
         usersDao.rememberUser(user);
     }
 
-    public void deleteUser(User user) {
+    public static void deleteUser(User user) {
         usersDao.deleteUser(user);
     }
 
-    public void updateUser(User user) {
+    public static void updateUser(User user) {
         usersDao.updateUser(user);
     }
 
-    public List<User> findAllUsers() {
+    public static List<User> findAllUsers() {
         return usersDao.findAllUsers();
     }
 
-    public Category findCategoryById(int id) {
+    public static Category findCategoryById(int id) {
         return usersDao.findCategoryById(id);
+    }
+
+    public static void saveOrUpdateUser(User user) {
+        usersDao.saveOrUpdateUser(user);
     }
 }

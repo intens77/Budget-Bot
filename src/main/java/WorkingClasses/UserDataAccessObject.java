@@ -21,9 +21,22 @@ public class UserDataAccessObject {
     }
 
     public void rememberUser(User user) {
+        try {
+            Session session = HibernateSessionFactory.getSessionFactory().openSession();
+            Transaction transaction = session.beginTransaction();
+            session.save(user);
+            transaction.commit();
+            session.close();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void saveOrUpdateUser(User user) {
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        session.save(user);
+        session.saveOrUpdate(user);
         transaction.commit();
         session.close();
     }
@@ -41,6 +54,7 @@ public class UserDataAccessObject {
     }
 
     public List<User> findAllUsers() {
+        @SuppressWarnings("unchecked")
         List<User> users = (List<User>) HibernateSessionFactory.getSessionFactory().openSession()
                 .createQuery("FROM User").list();
         return users;

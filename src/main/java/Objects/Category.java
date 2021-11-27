@@ -7,13 +7,13 @@ import javax.persistence.*;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int databaseId;
+    private int id;
 
     @Column(name = "category")
-    private String name;
+    public String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "database_id")
+    @JoinColumn(name = "user_database_id")
     private User user;
 
     private float amountSpent;
@@ -21,9 +21,14 @@ public class Category {
     public Category() {
     }
 
-    public Category(String name, float amountSpent) {
+    public Category(String name, float amountSpent, User user) {
         this.name = name;
         this.amountSpent = amountSpent;
+        this.user = user;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -48,5 +53,9 @@ public class Category {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String toString() {
+        return String.format("%s: %s", name, amountSpent);
     }
 }

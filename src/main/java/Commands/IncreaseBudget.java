@@ -6,6 +6,8 @@ import Objects.User;
 
 
 public class IncreaseBudget extends Command {
+    private static final int limitParameter = 1;
+
     public String execute(User user, String message) {
         var operationResult = user.increaseMonthBudget(Float.parseFloat(message));
         if (operationResult)
