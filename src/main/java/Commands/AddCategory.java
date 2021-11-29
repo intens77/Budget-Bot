@@ -3,9 +3,12 @@ package Commands;
 import Patterns.Command;
 import WorkingClasses.User;
 
+import java.util.ArrayList;
+
 public class AddCategory extends Command {
-    public AddCategory(Integer limitParameter) {
-        super(limitParameter);
+    public AddCategory() {
+        limitParameter = 1;
+        parameters = new ArrayList<>();
     }
 
     @Override

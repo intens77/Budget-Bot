@@ -6,12 +6,14 @@ import Patterns.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 
 public class ActionsHandler {
 
-    private final HashMap<String, Command> systemCommands;
-    private final HashMap<String, Command> usersCommands;
+    private final HashMap<String, Supplier<Command>> systemCommands;
+    private final HashMap<String, Supplier<Command>> usersCommands;
     private final HashMap<String, User> users;
     private final HashMap<String, Command> usersCommandsCalls;
 
@@ -20,25 +22,25 @@ public class ActionsHandler {
         usersCommands = new HashMap<>();
         users = new HashMap<>();
         usersCommandsCalls = new HashMap<>();
-        systemCommands.put("/start", new StartProcess(0));
-        systemCommands.put("/get_strategies", new GetStrategies(0));
-        systemCommands.put("/check_budget", new CheckBudget(0));
-        usersCommands.put("/increase_budget", new IncreaseBudget(1));
-        usersCommands.put("/decrease_budget", new DecreaseBudget(2));
-        usersCommands.put("/set_budget", new SetBudget(1));
-        usersCommands.put("/reset_budget", new ResetBudget(1));
-        systemCommands.put("/check_stat", new CheckStatistic(0));
-        usersCommands.put("/add_category", new AddCategory(1));
+        systemCommands.put("/start", StartProcess::new);
+        systemCommands.put("/get_strategies", GetStrategies::new);
+        systemCommands.put("/check_budget", CheckBudget::new);
+        usersCommands.put("/increase_budget", IncreaseBudget::new);
+        usersCommands.put("/decrease_budget", DecreaseBudget::new);
+        usersCommands.put("/set_budget", SetBudget::new);
+        usersCommands.put("/reset_budget", ResetBudget::new);
+        systemCommands.put("/check_stat", CheckStatistic::new);
+        usersCommands.put("/add_category", AddCategory::new);
     }
 
     public String processUserMessage(String userId, String message) {
         if (!users.containsKey(userId))
             users.put(userId, new User(userId));
         if ((message != null) & (systemCommands.containsKey(message))) {
-            return systemCommands.get(message).execute(users.get(userId), message);
+            return systemCommands.get(message).get().execute(users.get(userId), message);
         } else if ((message != null) & (usersCommands.containsKey(message))) {
-            usersCommands.get(message).getParameters().clear();
-            usersCommandsCalls.put(userId, usersCommands.get(message));
+            usersCommands.get(message).get().getParameters().clear();
+            usersCommandsCalls.put(userId, usersCommands.get(message).get());
             return "Введите параметры:";
         }else {
             if (usersCommandsCalls.isEmpty()) return ServiceFunctions.generateCommandError();

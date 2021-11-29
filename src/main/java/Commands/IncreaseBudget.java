@@ -4,9 +4,12 @@ import Patterns.Command;
 import WorkingClasses.ServiceFunctions;
 import WorkingClasses.User;
 
+import java.util.ArrayList;
+
 public class IncreaseBudget extends Command {
-    public IncreaseBudget(Integer limitParameter) {
-        super(limitParameter);
+    public IncreaseBudget() {
+        limitParameter = 1;
+        parameters = new ArrayList<>();
     }
 
     public String execute(User user, String message) {

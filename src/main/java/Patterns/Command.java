@@ -5,13 +5,8 @@ import WorkingClasses.User;
 import java.util.ArrayList;
 
 public abstract class Command  {
-    private ArrayList<String> parameters;
-    public final Integer limitParameter;
-    public Command(Integer limitParameter){
-        parameters = new ArrayList<>();
-        this.limitParameter = limitParameter;
-
-    }
+    protected ArrayList<String> parameters;
+    protected int limitParameter;
     public String execute(User user, String message) {
         return null;
     }

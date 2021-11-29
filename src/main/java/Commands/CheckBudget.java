@@ -3,9 +3,12 @@ package Commands;
 import Patterns.Command;
 import WorkingClasses.User;
 
+import java.util.ArrayList;
+
 public class CheckBudget extends Command {
-    public CheckBudget(Integer limitParameter) {
-        super(limitParameter);
+    public CheckBudget() {
+        limitParameter = 0;
+        parameters = new ArrayList<>();
     }
 
     @Override

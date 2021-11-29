@@ -3,9 +3,12 @@ package Commands;
 import Patterns.Command;
 import WorkingClasses.User;
 
+import java.util.ArrayList;
+
 public class GetStrategies extends Command {
-    public GetStrategies(Integer limitParameter) {
-        super(limitParameter);
+    public GetStrategies() {
+        limitParameter = 0;
+        parameters = new ArrayList<>();
     }
 
     @Override

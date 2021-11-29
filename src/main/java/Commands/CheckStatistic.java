@@ -4,9 +4,12 @@ import Patterns.Command;
 import WorkingClasses.Category;
 import WorkingClasses.User;
 
+import java.util.ArrayList;
+
 public class CheckStatistic extends Command {
-    public CheckStatistic(Integer limitParameter) {
-        super(limitParameter);
+    public CheckStatistic() {
+        limitParameter = 0;
+        parameters = new ArrayList<>();
     }
 
     @Override

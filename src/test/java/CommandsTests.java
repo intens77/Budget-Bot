@@ -145,8 +145,8 @@ public class CommandsTests {
     @Test
     void testCheckCategories() {
         User user = new User(System.getenv("MY_CHAT_ID"));
-        SetBudget setBudget = new SetBudget(1);
-        DecreaseBudget decreaseBudget = new DecreaseBudget(2);
+        SetBudget setBudget = new SetBudget();
+        DecreaseBudget decreaseBudget = new DecreaseBudget();
         float budget = 1000;
         setBudget.execute(user, String.valueOf(budget));
         decreaseBudget.execute(user, productsCosts);
@@ -157,15 +157,15 @@ public class CommandsTests {
     @Test
     void testAddCategory() {
         User user = new User(userId);
-        AddCategory addCategory = new AddCategory(1);
+        AddCategory addCategory = new AddCategory();
         addCategory.execute(user, "Прочее");
         assertTrue(user.getCategories().stream().anyMatch(x -> x.name.equals("Прочее")));
     }
     @Test
     void testCheckStatistic() {
         User user = new User(userId);
-        var setBudget = new SetBudget(1);
-        var decreaseBudget = new DecreaseBudget(2);
+        var setBudget = new SetBudget();
+        var decreaseBudget = new DecreaseBudget();
 
         setBudget.execute(user, String.valueOf(budget));
         decreaseBudget.execute(user, productsCosts);
@@ -173,7 +173,7 @@ public class CommandsTests {
         String result = "Ваши расходы по категориям:\n" +
                 "Транспорт: 0.0\n" + "Продукты: 200.0\n" + "Кафе: 500.0\n" +
                 "Всего вы потратили: 700.0";
-        assertEquals(result, new CheckStatistic(1).execute(user, "/check_stat"));
+        assertEquals(result, new CheckStatistic().execute(user, "/check_stat"));
     }
     @Test
     void testCheckFunctionality() {
