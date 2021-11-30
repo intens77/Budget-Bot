@@ -1,11 +1,16 @@
 package Commands;
 
+import Objects.Category;
 import Objects.User;
 import Patterns.Command;
-import Objects.Category;
+
+import java.util.ArrayList;
 
 public class CheckStatistic extends Command {
-    private static final int limitParameter = 0;
+    public CheckStatistic() {
+        parameters = new ArrayList<>();
+        limitParameter = 0;
+    }
 
     @Override
     public String execute(User user, String message) {

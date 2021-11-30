@@ -1,12 +1,16 @@
 package Commands;
 
+import Objects.User;
 import Patterns.Command;
 import WorkingClasses.ServiceFunctions;
-import Objects.User;
 
+import java.util.ArrayList;
 
 public class StartProcess extends Command {
-    private static final int limitParameter = 0;
+    public StartProcess() {
+        parameters = new ArrayList<>();
+        limitParameter = 0;
+    }
 
     @Override
     public String execute(User user, String message) {

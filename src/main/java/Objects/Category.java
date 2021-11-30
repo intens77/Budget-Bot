@@ -12,19 +12,19 @@ public class Category {
     @Column(name = "category")
     public String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_database_id")
     private User user;
 
+    @Column(name = "amount_spent")
     private float amountSpent;
 
     public Category() {
     }
 
-    public Category(String name, float amountSpent, User user) {
+    public Category(String name, float amountSpent) {
         this.name = name;
         this.amountSpent = amountSpent;
-        this.user = user;
     }
 
     public int getId() {

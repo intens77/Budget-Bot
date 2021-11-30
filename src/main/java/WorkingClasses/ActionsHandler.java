@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-
 public class ActionsHandler {
 
     private final HashMap<String, Supplier<Command>> systemCommands;
@@ -34,21 +33,21 @@ public class ActionsHandler {
     }
 
     public String processUserMessage(String userId, String message) {
-        if (users.isEmpty()) loadDataFromDatabase();
+        if (users.isEmpty())
+            loadDataFromDatabase();
         if (!users.containsKey(userId)) {
             User newUser = new User(userId);
             users.put(userId, newUser);
-            UserService.rememberUser(newUser);
+            EntityManager.saveUser(newUser);
         }
-        if ((message != null) & (systemCommands.containsKey(message))) {
+        if ((message != null) && (systemCommands.containsKey(message))) {
             return systemCommands.get(message).get().execute(users.get(userId), message);
-        } else if ((message != null) & (usersCommands.containsKey(message))) {
-            usersCommands.get(message).get().getParameters().clear();
+        } else if ((message != null) && (usersCommands.containsKey(message))) {
             usersCommandsCalls.put(userId, usersCommands.get(message).get());
             return "Введите параметры:";
         } else {
-            if (usersCommandsCalls.isEmpty()) return ServiceFunctions.generateCommandError();
-            usersCommandsCalls.get(userId).getParameters().add(message);
+            if (usersCommandsCalls.get(userId) == null) return ServiceFunctions.generateCommandError();
+            usersCommandsCalls.get(userId).addParameter(message);
             if (!usersCommandsCalls.get(userId).isEnough())
                 return "Впишите дополнительные параметры";
             Command processingCommandCall = usersCommandsCalls.get(userId);
@@ -57,7 +56,6 @@ public class ActionsHandler {
                     String.join(", ", processingCommandCall.getParameters()));
         }
     }
-
 
     public HashMap<String, User> getUsers() {
         return users;
@@ -70,7 +68,7 @@ public class ActionsHandler {
     }
 
     private void loadDataFromDatabase() {
-        List<User> rememberedUsers = UserService.findAllUsers();
+        List<User> rememberedUsers = EntityManager.findAllUsers();
         for (User user : rememberedUsers) {
             users.put(user.getTelegramId(), user);
         }

@@ -65,5 +65,3 @@ public final class BudgetBot extends TelegramLongPollingBot {
         return System.getenv("BOT_ACCESS_TOKEN");
     }
 }
-
-

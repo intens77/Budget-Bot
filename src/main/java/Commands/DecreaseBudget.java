@@ -1,18 +1,24 @@
 package Commands;
 
+import Objects.User;
 import Patterns.Command;
 import WorkingClasses.ServiceFunctions;
-import Objects.User;
+
+import java.util.ArrayList;
 
 public class DecreaseBudget extends Command {
-    private static final int limitParameter = 2;
+    public DecreaseBudget() {
+        parameters = new ArrayList<>();
+        limitParameter = 2;
+    }
 
     public String execute(User user, String message) {
         var operationResult = user.decreaseWithCategory(message);
-        if (operationResult)
+        if (operationResult) {
             return String.format("Отлично, Вы уменьшили ваш " +
                             "ежемесячный бюджет. Он составляет %s рублей",
                     user.checkMonthBudget());
+        }
         return ServiceFunctions.generateCommandParameterError();
     }
 }

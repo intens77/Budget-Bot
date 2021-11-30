@@ -1,11 +1,15 @@
 package Commands;
 
-import Patterns.Command;
 import Objects.User;
+import Patterns.Command;
 
+import java.util.ArrayList;
 
 public class GetStrategies extends Command {
-    private static final int limitParameter = 0;
+    public GetStrategies() {
+        parameters = new ArrayList<>();
+        limitParameter = 0;
+    }
 
     @Override
     public String execute(User user, String message) {

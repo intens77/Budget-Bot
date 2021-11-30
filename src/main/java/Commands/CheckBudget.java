@@ -3,9 +3,13 @@ package Commands;
 import Objects.User;
 import Patterns.Command;
 
+import java.util.ArrayList;
 
 public class CheckBudget extends Command {
-    private static final int limitParameter = 0;
+    public CheckBudget() {
+        parameters = new ArrayList<>();
+        limitParameter = 0;
+    }
 
     @Override
     public String execute(User user, String message) {

@@ -1,6 +1,8 @@
 package Objects;
 
 
+import WorkingClasses.EntityManager;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,7 @@ public class User {
     @Column(name = "month_budget")
     private float monthBudget;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Category> userCategories;
 
     public User() {
@@ -30,10 +32,10 @@ public class User {
         userCategories = new ArrayList<>();
     }
 
-
     public boolean setMonthBudget(float budget) {
         if (budget > 0) {
             monthBudget = budget;
+            EntityManager.updateUser(this);
             return true;
         }
         return false;
@@ -46,6 +48,7 @@ public class User {
     public boolean increaseMonthBudget(float sum) {
         if (sum > 0) {
             monthBudget += sum;
+            EntityManager.updateUser(this);
             return true;
         }
         return false;
@@ -54,6 +57,7 @@ public class User {
     public boolean decreaseMonthBudget(float sum) {
         if (sum > 0 & monthBudget >= sum) {
             monthBudget -= sum;
+            EntityManager.updateUser(this);
             return true;
         }
         return false;
@@ -63,11 +67,18 @@ public class User {
         return this.monthBudget;
     }
 
-    public void addNewCategory(Category category) {
+    public void addCategory(Category category) {
         category.setUser(this);
+//        EntityManager.saveCategory(category);
         userCategories.add(category);
+        EntityManager.updateUser(this);
     }
 
+    public void removeCategory(Category category) {
+//        EntityManager.deleteCategory(category);
+        userCategories.remove(category);
+        EntityManager.updateUser(this);
+    }
 
     public int getId() {
         return id;
@@ -85,12 +96,9 @@ public class User {
         return monthBudget;
     }
 
-    public List<Category> getUserCategories() {
-        return userCategories;
-    }
-
-    public void setUserCategories(List<Category> categories) {
+    public void setCategories(List<Category> categories) {
         userCategories = categories;
+        EntityManager.updateUser(this);
     }
 
     public boolean decreaseWithCategory(String message) {
@@ -98,9 +106,10 @@ public class User {
         var category = split_message[0];
         var sum = Float.parseFloat(split_message[1]);
         if (!containsCategory(category))
-            addCategory(category);
+            addCategory(new Category(category, 0));
         var cur = userCategories.stream().filter(x -> x.name.equals(category)).findFirst().get();
         cur.setAmountSpent(sum);
+//        EntityManager.updateCategory(cur);
         return decreaseMonthBudget(sum);
     }
 
@@ -110,14 +119,6 @@ public class User {
 
     public ArrayList<String> getCategoriesName() {
         return userCategories.stream().map(x -> x.name).collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    public void addCategory(String message) {
-        userCategories.add(new Category(message, 0f, this));
-    }
-
-    public void removeCategory(Category category) {
-        userCategories.remove(category);
     }
 
     public boolean containsCategory(String message) {

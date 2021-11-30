@@ -2,6 +2,7 @@ import Commands.AddCategory;
 import Commands.CheckStatistic;
 import Commands.DecreaseBudget;
 import Commands.SetBudget;
+import Objects.Category;
 import Objects.User;
 import WorkingClasses.ActionsHandler;
 import WorkingClasses.ServiceFunctions;
@@ -195,7 +196,7 @@ public class CommandsTests {
                 .stream()
                 .filter(x -> x.name.equals("Продукты")).
                 findFirst().get().getAmountSpent());
-        user.addCategory("Прочее");
+        user.addCategory(new Category("Прочее", 0));
         assertTrue(user.getCategories().stream().anyMatch(x -> x.name.equals("Прочее")));
         user.decreaseWithCategory("Прочее, 500");
         assertEquals(4500.0, user.checkMonthBudget());
