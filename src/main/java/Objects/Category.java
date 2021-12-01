@@ -58,4 +58,8 @@ public class Category {
     public String toString() {
         return String.format("%s: %s", name, amountSpent);
     }
+
+    public void increaseAmountSpent(float sum){
+        amountSpent += sum;
+    }
 }

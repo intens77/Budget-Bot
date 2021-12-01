@@ -21,15 +21,15 @@ public class ActionsHandler {
         usersCommands = new HashMap<>();
         users = new HashMap<>();
         usersCommandsCalls = new HashMap<>();
-        systemCommands.put("/start", StartProcess::new);
-        systemCommands.put("/get_strategies", GetStrategies::new);
-        systemCommands.put("/check_budget", CheckBudget::new);
-        usersCommands.put("/increase_budget", IncreaseBudget::new);
-        usersCommands.put("/decrease_budget", DecreaseBudget::new);
-        usersCommands.put("/set_budget", SetBudget::new);
-        usersCommands.put("/reset_budget", ResetBudget::new);
-        systemCommands.put("/check_stat", CheckStatistic::new);
-        usersCommands.put("/add_category", AddCategory::new);
+        systemCommands.put("старт", StartProcess::new);
+        systemCommands.put("Посмотреть стратегии", GetStrategies::new);
+        systemCommands.put("Узнать бюджет", CheckBudget::new);
+        usersCommands.put("Увеличить бюджет", IncreaseBudget::new);
+        usersCommands.put("Ввести расходы", DecreaseBudget::new);
+        usersCommands.put("Установить бюджет", SetBudget::new);
+        usersCommands.put("Переустановить бюджет", ResetBudget::new);
+        systemCommands.put("Узнать статистику", CheckStatistic::new);
+        usersCommands.put("Добавить категорию расходов", AddCategory::new);
     }
 
     public String processUserMessage(String userId, String message) {

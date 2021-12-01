@@ -69,13 +69,11 @@ public class User {
 
     public void addCategory(Category category) {
         category.setUser(this);
-//        EntityManager.saveCategory(category);
         userCategories.add(category);
         EntityManager.updateUser(this);
     }
 
     public void removeCategory(Category category) {
-//        EntityManager.deleteCategory(category);
         userCategories.remove(category);
         EntityManager.updateUser(this);
     }
@@ -108,8 +106,7 @@ public class User {
         if (!containsCategory(category))
             addCategory(new Category(category, 0));
         var cur = userCategories.stream().filter(x -> x.name.equals(category)).findFirst().get();
-        cur.setAmountSpent(sum);
-//        EntityManager.updateCategory(cur);
+        cur.increaseAmountSpent(sum);
         return decreaseMonthBudget(sum);
     }
 

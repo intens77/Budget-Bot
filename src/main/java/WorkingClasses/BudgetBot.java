@@ -31,7 +31,7 @@ public final class BudgetBot extends TelegramLongPollingBot {
             var userId = update.getMessage().getChatId().toString();
             messageSender.setChatId(userId);
             messageSender.setText(actionsHandler.processUserMessage(userId, update.getMessage().getText()));
-            if (update.getMessage().getText().equals("/decrease_budget")) {
+            if (update.getMessage().getText().equals("Ввести расходы")) {
                 setCommand(categoriesKeyboard, actionsHandler.getUsers().get(userId).getCategoriesName());
                 messageSender.setReplyMarkup(categoriesKeyboard);
             } else
