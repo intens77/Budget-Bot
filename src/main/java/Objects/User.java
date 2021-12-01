@@ -69,13 +69,11 @@ public class User {
 
     public void addCategory(Category category) {
         category.setUser(this);
-//        EntityManager.saveCategory(category);
         userCategories.add(category);
         EntityManager.updateUser(this);
     }
 
     public void removeCategory(Category category) {
-//        EntityManager.deleteCategory(category);
         userCategories.remove(category);
         EntityManager.updateUser(this);
     }

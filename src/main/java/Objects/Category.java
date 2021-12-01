@@ -59,7 +59,7 @@ public class Category {
         return String.format("%s: %s", name, amountSpent);
     }
 
-    public void increaseAmountSpent(float sum) {
+    public void increaseAmountSpent(float sum){
         amountSpent += sum;
     }
 }
