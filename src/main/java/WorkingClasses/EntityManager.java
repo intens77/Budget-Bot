@@ -54,7 +54,7 @@ public class EntityManager {
         try {
             Session session = HibernateSessionFactory.getSessionFactory().openSession();
             Transaction transaction = session.beginTransaction();
-            session.persist(user);
+            session.save(user);
             transaction.commit();
             session.close();
         } catch (Throwable e) {
@@ -104,5 +104,14 @@ public class EntityManager {
         List<User> users = (List<User>) session.createQuery("FROM User").list();
         session.close();
         return users;
+    }
+
+    public static User findUserByTelegramId(String id) {
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        @SuppressWarnings("unchecked")
+        User user = (User) session.createQuery("from User where telegramId = :id")
+                .setParameter("id", id).list().get(0);
+        session.close();
+        return user;
     }
 }

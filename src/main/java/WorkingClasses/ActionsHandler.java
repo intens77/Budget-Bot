@@ -33,13 +33,8 @@ public class ActionsHandler {
     }
 
     public String processUserMessage(String userId, String message) {
-        if (users.isEmpty())
-            loadDataFromDatabase();
-        if (!users.containsKey(userId)) {
-            User newUser = new User(userId);
-            users.put(userId, newUser);
-            EntityManager.saveUser(newUser);
-        }
+        if (users.isEmpty()) loadDataFromDatabase();
+        if (!users.containsKey(userId)) users.put(userId, new User(userId));
         if ((message != null) && (systemCommands.containsKey(message))) {
             return systemCommands.get(message).get().execute(users.get(userId), message);
         } else if ((message != null) && (usersCommands.containsKey(message))) {
@@ -48,12 +43,10 @@ public class ActionsHandler {
         } else {
             if (usersCommandsCalls.get(userId) == null) return ServiceFunctions.generateCommandError();
             usersCommandsCalls.get(userId).addParameter(message);
-            if (!usersCommandsCalls.get(userId).isEnough())
-                return "Впишите дополнительные параметры";
+            if (!usersCommandsCalls.get(userId).isEnough()) return "Впишите дополнительные параметры";
             Command processingCommandCall = usersCommandsCalls.get(userId);
             usersCommandsCalls.remove(userId);
-            return processingCommandCall.execute(users.get(userId),
-                    String.join(", ", processingCommandCall.getParameters()));
+            return processingCommandCall.execute(users.get(userId), String.join(", ", processingCommandCall.getParameters()));
         }
     }
 

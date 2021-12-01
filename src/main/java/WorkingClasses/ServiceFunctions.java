@@ -8,8 +8,7 @@ public class ServiceFunctions {
 
     public static String readFileContent(String filename) {
         try {
-            Scanner scanner = new Scanner(new File(String.format("src%1$smain%1$sresources%1$s%2$s",
-                    File.separator, filename)));
+            Scanner scanner = new Scanner(new File(String.format("src%1$smain%1$sresources%1$s%2$s", File.separator, filename)));
             scanner.useDelimiter("\\Z");
             return scanner.next();
         } catch (FileNotFoundException e) {
@@ -23,7 +22,6 @@ public class ServiceFunctions {
     }
 
     public static String generateCommandParameterError() {
-        return "Произошла ошибка. Скорее всего, " +
-                "Вы передали неверный параметр. Пожалуйста, прочитайте инструкцию и попробуйте снова";
+        return "Произошла ошибка. Скорее всего, " + "Вы передали неверный параметр. Пожалуйста, прочитайте инструкцию и попробуйте снова";
     }
 }

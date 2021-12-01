@@ -30,6 +30,7 @@ public class User {
     public User(String telegramId) {
         this.telegramId = telegramId;
         userCategories = new ArrayList<>();
+        EntityManager.saveUser(this);
     }
 
     public boolean setMonthBudget(float budget) {
@@ -68,6 +69,7 @@ public class User {
     }
 
     public void addCategory(Category category) {
+        if (userCategories.contains(category)) return;
         category.setUser(this);
         userCategories.add(category);
         EntityManager.updateUser(this);
@@ -94,17 +96,11 @@ public class User {
         return monthBudget;
     }
 
-    public void setCategories(List<Category> categories) {
-        userCategories = categories;
-        EntityManager.updateUser(this);
-    }
-
     public boolean decreaseWithCategory(String message) {
         var split_message = message.split(", ");
         var category = split_message[0];
         var sum = Float.parseFloat(split_message[1]);
-        if (!containsCategory(category))
-            addCategory(new Category(category, 0));
+        if (!containsCategory(category)) addCategory(new Category(category, 0));
         var cur = userCategories.stream().filter(x -> x.name.equals(category)).findFirst().get();
         cur.increaseAmountSpent(sum);
         return decreaseMonthBudget(sum);
@@ -114,11 +110,21 @@ public class User {
         return userCategories;
     }
 
+    public void setCategories(List<Category> categories) {
+        userCategories = categories;
+        EntityManager.updateUser(this);
+    }
+
     public ArrayList<String> getCategoriesName() {
         return userCategories.stream().map(x -> x.name).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public boolean containsCategory(String message) {
         return userCategories.stream().anyMatch(category -> category.name.equals(message));
+    }
+
+    public boolean containsCategory(Category category) {
+        System.out.println(userCategories.contains(category));
+        return userCategories.contains(category);
     }
 }

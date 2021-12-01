@@ -5,13 +5,11 @@ import javax.persistence.*;
 @Entity
 @Table(name = "users_categories")
 public class Category {
+    @Column(name = "category")
+    public String name;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Column(name = "category")
-    public String name;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_database_id")
     private User user;
@@ -59,7 +57,7 @@ public class Category {
         return String.format("%s: %s", name, amountSpent);
     }
 
-    public void increaseAmountSpent(float sum){
+    public void increaseAmountSpent(float sum) {
         amountSpent += sum;
     }
 }

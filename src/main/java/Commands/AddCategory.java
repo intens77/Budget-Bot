@@ -14,8 +14,7 @@ public class AddCategory extends Command {
 
     @Override
     public String execute(User user, String message) {
-        if (user.containsCategory(message))
-            return "Категория уже существует";
+        if (user.containsCategory(message)) return "Категория уже существует";
         user.addCategory(new Category(message, 0));
         return "Добавлена категория " + message;
     }
