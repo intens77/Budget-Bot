@@ -108,8 +108,7 @@ public class User {
         if (!containsCategory(category))
             addCategory(new Category(category, 0));
         var cur = userCategories.stream().filter(x -> x.name.equals(category)).findFirst().get();
-        cur.setAmountSpent(sum);
-//        EntityManager.updateCategory(cur);
+        cur.increaseAmountSpent(sum);
         return decreaseMonthBudget(sum);
     }
 
