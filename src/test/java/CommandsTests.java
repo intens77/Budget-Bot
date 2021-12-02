@@ -1,11 +1,13 @@
 import Commands.AddCategory;
-import Commands.CheckStatistic;
 import Commands.DecreaseBudget;
 import Commands.SetBudget;
 import Objects.Category;
 import Objects.User;
 import WorkingClasses.ActionsHandler;
+import WorkingClasses.EntityManager;
 import WorkingClasses.ServiceFunctions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,88 +15,78 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CommandsTests {
-    public String parameterRequestMessage;
-    public String commandError;
-    public String parameterErrorMessage;
-    public ActionsHandler actionsHandler;
+    public static String parameterRequestMessage;
+    public static String commandError;
+    public static String parameterErrorMessage;
+    public static ActionsHandler actionsHandler;
+    public static float budget;
+    public static String productsCosts;
+    public static String cafeCosts;
+    public User user;
     public String userId;
-    public float budget;
-    public String productsCosts;
-    public String cafeCosts;
 
-    @BeforeEach
-    void setUp() {
-        parameterRequestMessage = "Введите параметры:";
+    @BeforeAll
+    static void initBefore() {
         actionsHandler = new ActionsHandler();
-        userId = System.getenv("MY_CHAT_ID");
+        parameterRequestMessage = "Введите параметры:";
+        parameterErrorMessage = ServiceFunctions.generateCommandParameterError();
+        commandError = ServiceFunctions.generateCommandError();
         budget = 1000;
         productsCosts = "Продукты, 200";
         cafeCosts = "Кафе, 500";
-        parameterErrorMessage = ServiceFunctions.generateCommandParameterError();
-        commandError = ServiceFunctions.generateCommandError();
+    }
+
+    @BeforeEach
+    void setUp() {
+//        actionsHandler = new ActionsHandler();
+        userId = "42";
+        user = new User(userId);
+    }
+
+    @AfterEach
+    void deleteTestUser() {
+        EntityManager.deleteUser(user);
     }
 
     @Test
     void testStartProcess() {
         String result = ServiceFunctions.readFileContent("start.txt");
-        assertEquals(result, actionsHandler.processUserMessage(userId,
-                "/start"));
+        assertEquals(result, actionsHandler.processUserMessage(userId, "старт"));
     }
 
     @Test
     void testGetStrategies() {
         String result = "Стратегия 1\n Стратегия 2\n Стратегия 3";
-        assertEquals(result,
-                actionsHandler.processUserMessage(userId,
-                        "/get_strategies"));
+        assertEquals(result, actionsHandler.processUserMessage(userId, "Посмотреть стратегии"));
     }
 
     @Test
     void testNegativelySetBudget() {
         float budget = -100;
-        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId,
-                "/set_budget"));
-        assertEquals(parameterErrorMessage, actionsHandler.processUserMessage(userId,
-                String.valueOf(budget)));
+        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId, "Установить бюджет"));
+        assertEquals(parameterErrorMessage, actionsHandler.processUserMessage(userId, String.valueOf(budget)));
     }
 
     @Test
     void testPositivelySetBudget() {
         float budget = 100;
-        String resultMessage = String.format("Отлично, Вы установили ваш " +
-                "ежемесячный бюджет. Он составляет %s рублей", budget);
-        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId,
-                "/set_budget"));
-        assertEquals(resultMessage,
-                actionsHandler.processUserMessage(userId, String.valueOf(budget)));
+        String resultMessage = String.format("Отлично, Вы установили ваш " + "ежемесячный бюджет. Он составляет %s рублей", budget);
+        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId, "Установить бюджет"));
+        assertEquals(resultMessage, actionsHandler.processUserMessage(userId, String.valueOf(budget)));
     }
 
     @Test
     void testNegativelyIncreaseBudget() {
         float increase = -100;
-        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId,
-                "/increase_budget"));
-        assertEquals(parameterErrorMessage, actionsHandler.processUserMessage(userId,
-                String.valueOf(increase)));
-    }
-
-    @Test
-    void testPositivelyIncreasePositiveBudget() {
-        float increase = 100;
-        String resultMessage = String.format("Отлично, Вы увеличили ваш " +
-                "ежемесячный бюджет. Он составляет %s рублей", increase);
-        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId,
-                "/increase_budget"));
-        assertEquals(resultMessage, actionsHandler.processUserMessage(userId,
-                String.valueOf(increase)));
+        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId, "Увеличить бюджет"));
+        assertEquals(parameterErrorMessage, actionsHandler.processUserMessage(userId, String.valueOf(increase)));
     }
 
     @Test
     void testNegativelyDecreaseBudget() {
         String decrease = "Кафе";
         String sum = "-100";
-        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId,
-                "/decrease_budget"));
+        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId, "Ввести расходы"));
         actionsHandler.processUserMessage(userId, decrease);
         assertEquals(parameterErrorMessage, actionsHandler.processUserMessage(userId, sum));
     }
@@ -103,13 +95,10 @@ public class CommandsTests {
     void testPositivelyDecreasePositiveBudget() {
         String decrease = "Продукты";
         String sum = "100";
-        actionsHandler.processUserMessage(userId, "/set_budget");
+        actionsHandler.processUserMessage(userId, "Установить бюджет");
         actionsHandler.processUserMessage(userId, String.valueOf(budget));
-        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId,
-                "/decrease_budget"));
-        String expected = String.format("Отлично, Вы уменьшили ваш " +
-                        "ежемесячный бюджет. Он составляет %s рублей",
-                budget - Float.parseFloat(sum));
+        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId, "Ввести расходы"));
+        String expected = String.format("Отлично, Вы уменьшили ваш " + "ежемесячный бюджет. Он составляет %s рублей", budget - Float.parseFloat(sum));
         actionsHandler.processUserMessage(userId, decrease);
         String actual = actionsHandler.processUserMessage(userId, sum);
         assertEquals(expected, actual);
@@ -118,40 +107,26 @@ public class CommandsTests {
     @Test
     void testNegativelyResetBudget() {
         float newBudget = -100;
-        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId,
-                "/reset_budget"));
-        assertEquals(parameterErrorMessage, actionsHandler.processUserMessage(userId,
-                String.valueOf(newBudget)));
+        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId, "Переустановить бюджет"));
+        assertEquals(parameterErrorMessage, actionsHandler.processUserMessage(userId, String.valueOf(newBudget)));
     }
 
     @Test
     void testPositivelyResetBudget() {
         float newBudget = 100;
-        String resultMessage = String.format("Отлично, Вы переустановили ваш " +
-                "ежемесячный бюджет. Он составляет %s рублей", newBudget);
-        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId,
-                "/reset_budget"));
-        assertEquals(resultMessage,
-                actionsHandler.processUserMessage(userId, String.valueOf(newBudget)));
-    }
-
-    @Test
-    void testCheckBudget() {
-        User user = new User(userId);
-        String resultMessage = String.format("Ваш текущий бюджет: %s", user.checkMonthBudget());
-        assertEquals(resultMessage, actionsHandler.processUserMessage(user.getTelegramId(),
-                "/check_budget"));
+        String resultMessage = String.format("Отлично, Вы переустановили ваш " + "ежемесячный бюджет. Он составляет %s рублей", newBudget);
+        assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId, "Переустановить бюджет"));
+        assertEquals(resultMessage, actionsHandler.processUserMessage(userId, String.valueOf(newBudget)));
     }
 
     @Test
     void testGenerateCommandError() {
-        assertEquals(commandError, actionsHandler.processUserMessage(userId,
-                "/какая-то неизвестная команда"));
+        assertEquals(commandError, actionsHandler.processUserMessage(userId, "/какая-то неизвестная команда"));
     }
 
     @Test
     void testCheckCategories() {
-        User user = new User(System.getenv("MY_CHAT_ID"));
+//        User user = new User(System.getenv("MY_CHAT_ID"));
         SetBudget setBudget = new SetBudget();
         DecreaseBudget decreaseBudget = new DecreaseBudget();
         float budget = 1000;
@@ -163,39 +138,21 @@ public class CommandsTests {
 
     @Test
     void testAddCategory() {
-        User user = new User(userId);
+//        User user = new User(userId);
         AddCategory addCategory = new AddCategory();
         addCategory.execute(user, "Прочее");
         assertTrue(user.getCategories().stream().anyMatch(x -> x.name.equals("Прочее")));
     }
 
     @Test
-    void testCheckStatistic() {
-        User user = new User(userId);
-        var setBudget = new SetBudget();
-        var decreaseBudget = new DecreaseBudget();
-
-        setBudget.execute(user, String.valueOf(budget));
-        decreaseBudget.execute(user, productsCosts);
-        decreaseBudget.execute(user, cafeCosts);
-        String result = "Ваши расходы по категориям:\n" +
-                "Транспорт: 0.0\n" + "Продукты: 200.0\n" + "Кафе: 500.0\n" +
-                "Всего вы потратили: 700.0";
-        assertEquals(result, new CheckStatistic().execute(user, "/check_stat"));
-    }
-
-    @Test
     void testCheckFunctionality() {
-        User user = new User(userId);
+//        User user = new User(userId);
         user.setMonthBudget(budget);
         assertEquals(budget, user.checkMonthBudget());
         float increase = 5000;
         user.increaseMonthBudget(increase);
         user.decreaseWithCategory("Продукты, 1000");
-        assertEquals(1000, user.getCategories()
-                .stream()
-                .filter(x -> x.name.equals("Продукты")).
-                findFirst().get().getAmountSpent());
+        assertEquals(1000, user.getCategories().stream().filter(x -> x.name.equals("Продукты")).findFirst().get().getAmountSpent());
         user.addCategory(new Category("Прочее", 0));
         assertTrue(user.getCategories().stream().anyMatch(x -> x.name.equals("Прочее")));
         user.decreaseWithCategory("Прочее, 500");
@@ -206,8 +163,8 @@ public class CommandsTests {
 
     @Test
     void testCheckTwoUsers() {
-        actionsHandler.processUserMessage("1", "/set_budget");
-        actionsHandler.processUserMessage("2", "/set_budget");
+        actionsHandler.processUserMessage("1", "Установить бюджет");
+        actionsHandler.processUserMessage("2", "Установить бюджет");
         actionsHandler.processUserMessage("2", "10000");
         actionsHandler.processUserMessage("1", "15000");
         assertEquals(10000, actionsHandler.getUsers().get("2").checkMonthBudget());
