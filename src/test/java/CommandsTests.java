@@ -38,7 +38,6 @@ public class CommandsTests {
 
     @BeforeEach
     void setUp() {
-//        actionsHandler = new ActionsHandler();
         userId = "42";
         user = new User(userId);
     }
@@ -126,7 +125,6 @@ public class CommandsTests {
 
     @Test
     void testCheckCategories() {
-//        User user = new User(System.getenv("MY_CHAT_ID"));
         SetBudget setBudget = new SetBudget();
         DecreaseBudget decreaseBudget = new DecreaseBudget();
         float budget = 1000;
@@ -138,7 +136,6 @@ public class CommandsTests {
 
     @Test
     void testAddCategory() {
-//        User user = new User(userId);
         AddCategory addCategory = new AddCategory();
         addCategory.execute(user, "Прочее");
         assertTrue(user.getCategories().stream().anyMatch(x -> x.name.equals("Прочее")));
@@ -146,7 +143,6 @@ public class CommandsTests {
 
     @Test
     void testCheckFunctionality() {
-//        User user = new User(userId);
         user.setMonthBudget(budget);
         assertEquals(budget, user.checkMonthBudget());
         float increase = 5000;
