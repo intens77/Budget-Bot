@@ -1,6 +1,8 @@
 package Objects;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users_categories")
@@ -17,12 +19,16 @@ public class Category {
     @Column(name = "amount_spent")
     private float amountSpent;
 
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DateSpent> dateSpentList;
+
     public Category() {
     }
 
     public Category(String name, float amountSpent) {
         this.name = name;
         this.amountSpent = amountSpent;
+        dateSpentList = new ArrayList<>();
     }
 
     public int getId() {
@@ -59,5 +65,25 @@ public class Category {
 
     public void increaseAmountSpent(float sum) {
         amountSpent += sum;
+    }
+
+    public List<DateSpent> getDateSpentList() {
+        return dateSpentList;
+    }
+
+    public void setDateSpentList(ArrayList<DateSpent> dateSpentList) {
+        this.dateSpentList = dateSpentList;
+    }
+
+    public void addDateSpent(java.sql.Date date, float sum){
+        if (dateSpentList.stream().anyMatch(x -> x.getDate().equals(date)))
+            dateSpentList.stream().filter(x -> x.getDate().equals(date))
+                    .findFirst().get().addSpent(sum);
+        else
+//            var currentDate = new DateSpent(dateSpent.getMonth(), sum);
+//        var newSpent = new DateSpent(date, sum);
+//        newSpent.setCategory(this);
+        dateSpentList.add(new DateSpent(date, sum));
+
     }
 }

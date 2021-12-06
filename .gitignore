@@ -12,4 +12,5 @@
 *.ear
 
 *.iml
+*.cfg.xml
 *.idea

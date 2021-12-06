@@ -4,6 +4,9 @@ package Objects;
 import WorkingClasses.EntityManager;
 
 import javax.persistence.*;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,11 +103,26 @@ public class User {
         var split_message = message.split(", ");
         var category = split_message[0];
         var sum = Float.parseFloat(split_message[1]);
+//        dateSpent(sum);
         if (!containsCategory(category)) addCategory(new Category(category, 0));
         var cur = userCategories.stream().filter(x -> x.name.equals(category)).findFirst().get();
         cur.increaseAmountSpent(sum);
+        cur.addDateSpent(java.sql.Date.valueOf(LocalDate.now()), sum);
         return decreaseMonthBudget(sum);
     }
+
+//    public void addDateSpent(Category )
+//
+//    public void dateSpent(float sum){
+//        var date = YearMonth.now();
+//        var optionalMonth  = dataSpent.stream().filter(x -> x.getMonth().equals(date)).findFirst()
+//        if (optionalMonth.isPresent()){
+//            var current = optionalMonth.get();
+//            current.addSpend(sum);
+//        }
+//        else
+//            dataSpent.add(new DataSpent(date, sum));
+//    }
 
     public List<Category> getCategories() {
         return userCategories;
