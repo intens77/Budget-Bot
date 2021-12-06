@@ -38,17 +38,17 @@ public class EntityManager {
         }
     }
 
-    public static void updateCategory(Category category) {
-        try {
-            Session session = HibernateSessionFactory.getSessionFactory().openSession();
-            Transaction transaction = session.beginTransaction();
-            session.update(category);
-            transaction.commit();
-            session.close();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void updateCategory(Category category) {
+//        try {
+//            Session session = HibernateSessionFactory.getSessionFactory().openSession();
+//            Transaction transaction = session.beginTransaction();
+//            session.update(category);
+//            transaction.commit();
+//            session.close();
+//        } catch (Throwable e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public static void saveUser(User user) {
         try {
@@ -62,17 +62,17 @@ public class EntityManager {
         }
     }
 
-    public static void saveCategory(Category category) {
-        try {
-            Session session = HibernateSessionFactory.getSessionFactory().openSession();
-            Transaction transaction = session.beginTransaction();
-            session.persist(category);
-            transaction.commit();
-            session.close();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void saveCategory(Category category) {
+//        try {
+//            Session session = HibernateSessionFactory.getSessionFactory().openSession();
+//            Transaction transaction = session.beginTransaction();
+//            session.persist(category);
+//            transaction.commit();
+//            session.close();
+//        } catch (Throwable e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public static void deleteUser(User user) {
         try {
@@ -86,17 +86,17 @@ public class EntityManager {
         }
     }
 
-    public static void deleteCategory(Category category) {
-        try {
-            Session session = HibernateSessionFactory.getSessionFactory().openSession();
-            Transaction transaction = session.beginTransaction();
-            session.delete(category);
-            transaction.commit();
-            session.close();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void deleteCategory(Category category) {
+//        try {
+//            Session session = HibernateSessionFactory.getSessionFactory().openSession();
+//            Transaction transaction = session.beginTransaction();
+//            session.delete(category);
+//            transaction.commit();
+//            session.close();
+//        } catch (Throwable e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public static List<User> findAllUsers() {
         Session session = HibernateSessionFactory.getSessionFactory().openSession();

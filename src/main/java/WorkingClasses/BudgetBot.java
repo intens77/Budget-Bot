@@ -1,5 +1,6 @@
 package WorkingClasses;
 
+import Commands.CheckTimeSpent;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -8,6 +9,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public final class BudgetBot extends TelegramLongPollingBot {
 
@@ -15,10 +18,12 @@ public final class BudgetBot extends TelegramLongPollingBot {
     private static ActionsHandler actionsHandler;
     ReplyKeyboardMarkup replyKeyboardMarkup;
     ReplyKeyboardMarkup categoriesKeyboard;
+    ReplyKeyboardMarkup timeIntervals;
 
     public BudgetBot() {
         messageSender = new SendMessage();
         actionsHandler = new ActionsHandler();
+        timeIntervals = new ReplyKeyboardMarkup();
         replyKeyboardMarkup = new ReplyKeyboardMarkup();
         categoriesKeyboard = new ReplyKeyboardMarkup();
         setCommand(replyKeyboardMarkup, actionsHandler.getCommand());
@@ -34,7 +39,11 @@ public final class BudgetBot extends TelegramLongPollingBot {
             if (update.getMessage().getText().equals("Ввести расходы")) {
                 setCommand(categoriesKeyboard, actionsHandler.getUsers().get(userId).getCategoriesName());
                 messageSender.setReplyMarkup(categoriesKeyboard);
-            } else messageSender.setReplyMarkup(replyKeyboardMarkup);
+            }else if (update.getMessage().getText().equals("Проверить расходы")){
+                setCommand(timeIntervals, Arrays.stream(CheckTimeSpent.timeIntervals).collect(Collectors.toCollection(ArrayList::new)));
+                messageSender.setReplyMarkup(timeIntervals);
+            }
+            else messageSender.setReplyMarkup(replyKeyboardMarkup);
 
             try {
                 execute(messageSender);

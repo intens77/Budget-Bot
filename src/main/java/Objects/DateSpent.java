@@ -17,15 +17,12 @@ public class DateSpent {
     @JoinColumn(name = "category_id")
     private Category category;
 
-
-
     public DateSpent(Date date, float spent) {
         this.date = date;
         this.spent = spent;
     }
 
     public DateSpent() {
-
     }
 
     public int getId() {
@@ -59,18 +56,4 @@ public class DateSpent {
     public void addSpent(float sum) {
         spent += sum;
     }
-
-
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        DateSpent dateSpent = (DateSpent) o;
-//        return month.equals(dateSpent.month) && category.equals(dateSpent.category);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(month, category);
-//    }
 }

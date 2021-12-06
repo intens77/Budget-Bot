@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public abstract class Command {
     protected ArrayList<String> parameters;
     protected int limitParameter;
+    protected String outMessage;
 
     public abstract String execute(User user, String message);
 
@@ -21,5 +22,9 @@ public abstract class Command {
 
     public void addParameter(String parameter) {
         parameters.add(parameter);
+    }
+
+    public String getOutMessage() {
+        return outMessage;
     }
 }

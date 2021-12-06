@@ -11,6 +11,7 @@ public class IncreaseBudget extends Command {
     public IncreaseBudget() {
         parameters = new ArrayList<>();
         limitParameter = 1;
+        outMessage = "Введите сумму";
     }
 
     public String execute(User user, String message) {

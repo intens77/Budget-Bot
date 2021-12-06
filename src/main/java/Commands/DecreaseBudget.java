@@ -10,6 +10,7 @@ public class DecreaseBudget extends Command {
     public DecreaseBudget() {
         parameters = new ArrayList<>();
         limitParameter = 2;
+        outMessage = "Выберите или введите категорию расходов";
     }
 
     public String execute(User user, String message) {

@@ -33,7 +33,7 @@ public class User {
     public User(String telegramId) {
         this.telegramId = telegramId;
         userCategories = new ArrayList<>();
-        EntityManager.saveUser(this);
+//        EntityManager.saveUser(this);
     }
 
     public boolean setMonthBudget(float budget) {
@@ -111,19 +111,6 @@ public class User {
         return decreaseMonthBudget(sum);
     }
 
-//    public void addDateSpent(Category )
-//
-//    public void dateSpent(float sum){
-//        var date = YearMonth.now();
-//        var optionalMonth  = dataSpent.stream().filter(x -> x.getMonth().equals(date)).findFirst()
-//        if (optionalMonth.isPresent()){
-//            var current = optionalMonth.get();
-//            current.addSpend(sum);
-//        }
-//        else
-//            dataSpent.add(new DataSpent(date, sum));
-//    }
-
     public List<Category> getCategories() {
         return userCategories;
     }
@@ -141,8 +128,8 @@ public class User {
         return userCategories.stream().anyMatch(category -> category.name.equals(message));
     }
 
-    public boolean containsCategory(Category category) {
-        System.out.println(userCategories.contains(category));
-        return userCategories.contains(category);
-    }
+//    public boolean containsCategory(Category category) {
+//        System.out.println(userCategories.contains(category));
+//        return userCategories.contains(category);
+//    }
 }

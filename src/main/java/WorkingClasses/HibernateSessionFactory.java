@@ -1,6 +1,7 @@
 package WorkingClasses;
 
 import Objects.Category;
+import Objects.DateSpent;
 import Objects.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -13,6 +14,7 @@ public class HibernateSessionFactory {
         Configuration configuration = new Configuration().configure();
         configuration.addAnnotatedClass(User.class);
         configuration.addAnnotatedClass(Category.class);
+        configuration.addAnnotatedClass(DateSpent.class);
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
         sessionFactory = configuration.buildSessionFactory(builder.build());
         return sessionFactory;
