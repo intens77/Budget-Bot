@@ -6,6 +6,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InteractionWithDatabaseTests {
@@ -21,14 +23,30 @@ public class InteractionWithDatabaseTests {
     @AfterEach
     void deleteTestUser() {
         EntityManager.deleteUser(user);
+        EntityManager.deleteUser(new User("1001"));
     }
 
     @Test
-    void testSaveUser() {
+    void testSaveNonExistingUser() {
+        User currentUser = new User();
+        currentUser.setCategories(new ArrayList<>());
+        currentUser.setTelegramId("1001");
+        EntityManager.saveUser(currentUser);
+        assertNotNull(EntityManager.findUserByTelegramId("1001"));
+        EntityManager.deleteUser(currentUser);
+    }
+
+    @Test
+    void testSaveExistingUser() {
         EntityManager.saveUser(user);
         user = EntityManager.findUserByTelegramId(user.getTelegramId());
         assertNotNull(user);
     }
+
+//    @Test
+//    void testDeleteNonExistingUser() {
+//        assertThrows(Throwable.class, EntityManager.deleteUser(new User("1001")));
+//    }
 
     @Test
     void testUpdateUser() {

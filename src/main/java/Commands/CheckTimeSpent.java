@@ -78,8 +78,8 @@ public class CheckTimeSpent extends Command {
                     predicate = (DateSpent x) -> x.getDate().equals(curTime);
                     break;
                 case "Вчера":
-                    var tommorrow = Date.valueOf(LocalDate.now().minusDays(1));
-                    predicate = (DateSpent x) -> x.getDate().equals(tommorrow);
+                    var tomorrow = Date.valueOf(LocalDate.now().minusDays(1));
+                    predicate = (DateSpent x) -> x.getDate().equals(tomorrow);
                     break;
                 case "Текущий месяц":
                     var dayMonthAgo = Date.valueOf(LocalDate.now().minusMonths(1));
