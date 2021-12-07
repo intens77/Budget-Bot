@@ -22,7 +22,6 @@ public class ActionsHandler {
         users = new HashMap<>();
         usersCommandsCalls = new HashMap<>();
         systemCommands.put("старт", StartProcess::new);
-        systemCommands.put("Посмотреть стратегии", GetStrategies::new);
         systemCommands.put("Узнать бюджет", CheckBudget::new);
         usersCommands.put("Увеличить бюджет", IncreaseBudget::new);
         usersCommands.put("Ввести расходы", DecreaseBudget::new);

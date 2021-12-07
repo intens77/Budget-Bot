@@ -27,7 +27,6 @@ public class HibernateSessionFactory {
         configuration.setProperty("hibernate.connection.url", System.getenv("DATABASE_URL"));
         configuration.setProperty("hibernate.connection.username", System.getenv("DATABASE_USERNAME"));
         configuration.setProperty("hibernate.connection.password", System.getenv("DATABASE_PASSWORD"));
-        configuration.setProperty("hibernate.connection.password", System.getenv("DATABASE_PASSWORD"));
         configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL10Dialect");
         configuration.setProperty("show_sql", "false");
         return configuration;
