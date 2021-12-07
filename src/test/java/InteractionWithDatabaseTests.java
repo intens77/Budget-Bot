@@ -18,12 +18,13 @@ public class InteractionWithDatabaseTests {
     void setUp() {
         actionsHandler = new ActionsHandler();
         user = new User("777");
+        EntityManager.saveUser(user);
     }
 
     @AfterEach
     void deleteTestUser() {
         EntityManager.deleteUser(user);
-        EntityManager.deleteUser(new User("1001"));
+//        EntityManager.deleteUser(new User("1001"));
     }
 
     @Test
