@@ -10,6 +10,7 @@ public class AddCategory extends Command {
     public AddCategory() {
         parameters = new ArrayList<>();
         limitParameter = 1;
+        outMessage = "Введите название категории";
     }
 
     @Override

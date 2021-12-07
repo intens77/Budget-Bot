@@ -11,6 +11,7 @@ public class ResetBudget extends Command {
     public ResetBudget() {
         parameters = new ArrayList<>();
         limitParameter = 1;
+        outMessage = "Введите сумму";
     }
 
     public String execute(User user, String message) {

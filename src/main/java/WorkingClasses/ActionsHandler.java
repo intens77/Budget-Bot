@@ -29,16 +29,22 @@ public class ActionsHandler {
         usersCommands.put("Переустановить бюджет", ResetBudget::new);
         systemCommands.put("Узнать статистику", CheckStatistic::new);
         usersCommands.put("Добавить категорию расходов", AddCategory::new);
+        usersCommands.put("Проверить расходы", CheckTimeSpent::new);
     }
 
     public String processUserMessage(String userId, String message) {
         if (users.isEmpty()) loadDataFromDatabase();
-        if (!users.containsKey(userId)) users.put(userId, new User(userId));
+        if (!users.containsKey(userId)) {
+            User newUser = new User(userId);
+            users.put(userId, newUser);
+            EntityManager.saveUser(newUser);
+        }
         if ((message != null) && (systemCommands.containsKey(message))) {
             return systemCommands.get(message).get().execute(users.get(userId), message);
         } else if ((message != null) && (usersCommands.containsKey(message))) {
             usersCommandsCalls.put(userId, usersCommands.get(message).get());
-            return "Введите параметры:";
+            return usersCommands.get(message).get().getOutMessage();
+//            return "Введите параметры:";
         } else {
             if (usersCommandsCalls.get(userId) == null) return ServiceFunctions.generateCommandError();
             usersCommandsCalls.get(userId).addParameter(message);
@@ -54,19 +60,15 @@ public class ActionsHandler {
     }
 
     public ArrayList<String> getCommand() {
-        ArrayList<String> strCommands = new ArrayList<>(systemCommands.keySet());
+        ArrayList<String> strCommands = new ArrayList<String>(systemCommands.keySet());
         strCommands.addAll(usersCommands.keySet());
         return strCommands;
     }
 
     private void loadDataFromDatabase() {
-        try {
-            List<User> rememberedUsers = EntityManager.findAllUsers();
-            for (User user : rememberedUsers) {
-                users.put(user.getTelegramId(), user);
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
+        List<User> rememberedUsers = EntityManager.findAllUsers();
+        for (User user : rememberedUsers) {
+            users.put(user.getTelegramId(), user);
         }
     }
 }

@@ -11,6 +11,7 @@ public class SetBudget extends Command {
     public SetBudget() {
         parameters = new ArrayList<>();
         limitParameter = 1;
+        outMessage = "Введите сумму";
     }
 
     @Override

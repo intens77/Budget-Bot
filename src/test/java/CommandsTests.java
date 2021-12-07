@@ -1,7 +1,5 @@
-import Commands.AddCategory;
 import Commands.CheckTimeSpent;
 import Commands.DecreaseBudget;
-import Commands.SetBudget;
 import Objects.Category;
 import Objects.User;
 import WorkingClasses.ActionsHandler;
@@ -22,12 +20,22 @@ public class CommandsTests {
     public static String parameterRequestMessage;
     public static String commandError;
     public static String parameterErrorMessage;
-    public ActionsHandler actionsHandler;
-    public User user;
-    public String userId;
     public static float budget;
     public static String productsCosts;
     public static String cafeCosts;
+    public ActionsHandler actionsHandler;
+    public User user;
+    public String userId;
+
+    @BeforeAll
+    static void initBefore() {
+        parameterRequestMessage = "Введите сумму";
+        parameterErrorMessage = ServiceFunctions.generateCommandParameterError();
+        commandError = ServiceFunctions.generateCommandError();
+        budget = 1000;
+        productsCosts = "Продукты, 200";
+        cafeCosts = "Кафе, 500";
+    }
 
     @BeforeEach
     void setUp() {
@@ -38,18 +46,8 @@ public class CommandsTests {
     }
 
     @AfterEach
-    void afterTest(){
+    void afterTest() {
         EntityManager.deleteUser(user);
-    }
-
-    @BeforeAll
-    static void initBefore(){
-        parameterRequestMessage = "Введите сумму";
-        parameterErrorMessage = ServiceFunctions.generateCommandParameterError();
-        commandError = ServiceFunctions.generateCommandError();
-        budget = 1000;
-        productsCosts = "Продукты, 200";
-        cafeCosts = "Кафе, 500";
     }
 
     @AfterEach
@@ -90,7 +88,7 @@ public class CommandsTests {
         assertEquals(parameterRequestMessage, actionsHandler.processUserMessage(userId,
                 "Увеличить бюджет"));
         User currentUser = actionsHandler.getUsers().get(userId);
-        String answer = String.format("Отлично, Вы увеличили ваш " + "ежемесячный бюджет. Он составляет %s рублей",  currentUser.checkMonthBudget() + increase);
+        String answer = String.format("Отлично, Вы увеличили ваш " + "ежемесячный бюджет. Он составляет %s рублей", currentUser.checkMonthBudget() + increase);
         assertEquals(answer, actionsHandler.processUserMessage(userId,
                 String.valueOf(increase)));
     }
@@ -183,12 +181,12 @@ public class CommandsTests {
         actionsHandler.processUserMessage(userId, "Ввести расходы");
         actionsHandler.processUserMessage(userId, "Прочее");
         actionsHandler.processUserMessage(userId, "300");
-        assertEquals(new CheckTimeSpent().getOutMessage(),actionsHandler.processUserMessage(userId, "Проверить расходы"));
+        assertEquals(new CheckTimeSpent().getOutMessage(), actionsHandler.processUserMessage(userId, "Проверить расходы"));
         return actionsHandler.processUserMessage(userId, date);
     }
 
     @Test
-    void testCheckTimeSpent(){
+    void testCheckTimeSpent() {
         assertEquals("Прочее: 300.0\n", CheckTimeSpent(Date.valueOf(LocalDate.now()).toString()));
         assertEquals("Прочее: 600.0\n", CheckTimeSpent("Декабрь 2021"));
         assertEquals("Прочее: 900.0\n", CheckTimeSpent("Сегодня"));
@@ -199,7 +197,7 @@ public class CommandsTests {
     }
 
     @Test
-    void testCheckTimeSpentUser(){
+    void testCheckTimeSpentUser() {
         actionsHandler.processUserMessage(userId, "Установить бюджет");
         actionsHandler.processUserMessage(userId, String.valueOf(budget));
         Category category = new Category("Товары", 200);

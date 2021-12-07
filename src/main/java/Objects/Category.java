@@ -2,6 +2,7 @@ package Objects;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 @Entity
@@ -64,7 +65,8 @@ public class Category {
     }
 
     public void increaseAmountSpent(float sum) {
-        amountSpent += sum;
+        if (user.getMonthBudget() > sum && sum > 0)
+            amountSpent += sum;
     }
 
     public List<DateSpent> getDateSpentList() {
@@ -75,13 +77,16 @@ public class Category {
         this.dateSpentList = dateSpentList;
     }
 
-    public void addDateSpent(java.sql.Date date, float sum){
+    public void addDateSpent(Date date, float sum) {
+        if (sum < 0 || user.getMonthBudget() < sum) return;
         if (dateSpentList.stream().anyMatch(x -> x.getDate().equals(date)))
             dateSpentList.stream().filter(x -> x.getDate().equals(date))
                     .findFirst().get().addSpent(sum);
-        DateSpent newSpent = new DateSpent(date, sum);
-        newSpent.setCategory(this);
-        dateSpentList.add(new DateSpent(date, sum));
+        else {
+            DateSpent newSpent = new DateSpent(date, sum);
+            newSpent.setCategory(this);
+            dateSpentList.add(newSpent);
+        }
 
     }
 }
