@@ -44,7 +44,6 @@ public class ActionsHandler {
         } else if ((message != null) && (usersCommands.containsKey(message))) {
             usersCommandsCalls.put(userId, usersCommands.get(message).get());
             return usersCommands.get(message).get().getOutMessage();
-//            return "Введите параметры:";
         } else {
             if (usersCommandsCalls.get(userId) == null) return ServiceFunctions.generateCommandError();
             usersCommandsCalls.get(userId).addParameter(message);

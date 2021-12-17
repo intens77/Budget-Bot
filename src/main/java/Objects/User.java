@@ -4,9 +4,7 @@ package Objects;
 import WorkingClasses.EntityManager;
 
 import javax.persistence.*;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +31,6 @@ public class User {
     public User(String telegramId) {
         this.telegramId = telegramId;
         userCategories = new ArrayList<>();
-//        EntityManager.saveUser(this);
     }
 
     public boolean setMonthBudget(float budget) {
@@ -103,7 +100,6 @@ public class User {
         String[] split_message = message.split(", ");
         String category = split_message[0];
         float sum = Float.parseFloat(split_message[1]);
-//        dateSpent(sum);
         if (!containsCategory(category)) addCategory(new Category(category, 0));
         Category cur = userCategories.stream().filter(x -> x.name.equals(category)).findFirst().get();
         cur.increaseAmountSpent(sum);
@@ -127,9 +123,4 @@ public class User {
     public boolean containsCategory(String message) {
         return userCategories.stream().anyMatch(category -> category.name.equals(message));
     }
-
-//    public boolean containsCategory(Category category) {
-//        System.out.println(userCategories.contains(category));
-//        return userCategories.contains(category);
-//    }
 }

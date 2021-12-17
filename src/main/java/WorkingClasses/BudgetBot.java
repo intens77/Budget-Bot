@@ -39,11 +39,10 @@ public final class BudgetBot extends TelegramLongPollingBot {
             if (update.getMessage().getText().equals("Ввести расходы")) {
                 setCommand(categoriesKeyboard, actionsHandler.getUsers().get(userId).getCategoriesName());
                 messageSender.setReplyMarkup(categoriesKeyboard);
-            }else if (update.getMessage().getText().equals("Проверить расходы")){
+            } else if (update.getMessage().getText().equals("Проверить расходы")) {
                 setCommand(timeIntervals, Arrays.stream(CheckTimeSpent.timeIntervals).collect(Collectors.toCollection(ArrayList::new)));
                 messageSender.setReplyMarkup(timeIntervals);
-            }
-            else messageSender.setReplyMarkup(replyKeyboardMarkup);
+            } else messageSender.setReplyMarkup(replyKeyboardMarkup);
 
             try {
                 execute(messageSender);
