@@ -5,6 +5,7 @@ import Objects.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EntityManager {
@@ -99,11 +100,16 @@ public class EntityManager {
     }
 
     public static List<User> findAllUsers() {
-        Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        @SuppressWarnings("unchecked")
-        List<User> users = (List<User>) session.createQuery("FROM User").list();
-        session.close();
-        return users;
+        try {
+            Session session = HibernateSessionFactory.getSessionFactory().openSession();
+            @SuppressWarnings("unchecked")
+            List<User> users = (List<User>) session.createQuery("FROM User").list();
+            session.close();
+            return users;
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 
     public static User findUserByTelegramId(String id) {
